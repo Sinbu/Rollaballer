@@ -16,6 +16,7 @@ public class General : MonoBehaviour {
 	public Text countText;
 	public Text timeText;
 	public Text winText;
+	public TextMesh hint1;
 	public GameObject glassCeiling;
 
 	// Timers
@@ -33,6 +34,11 @@ public class General : MonoBehaviour {
 		countdownText.enabled = true;
 		SetCountText ();
 		winText.text = "";
+		if (SystemInfo.deviceType == DeviceType.Handheld) {
+			hint1.text = "Tap = Jump";
+		} else {
+			hint1.text = "Space = Jump";
+		}
 	}
 
 	// Update is called once per frame

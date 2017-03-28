@@ -5,15 +5,21 @@ using UnityEngine.UI;
 
 public class General : MonoBehaviour {
 
-	private float startTime = 3.0f;
+	// States
+
 	private bool? startedGame = false;
 	private bool endedGame = false;
+	// private bool passedPlatform1 = false;
+
 	private PlayerController playerController;
 	public Text countdownText;
 	public Text countText;
 	public Text timeText;
 	public Text winText;
 	public GameObject glassCeiling;
+
+	// Timers
+	private float startTime = 3.0f;
 	private float timer = 0.0f;
 
 	private int pickupCount = -1;
@@ -53,7 +59,7 @@ public class General : MonoBehaviour {
 			timer += Time.deltaTime;
 			timeText.text = "Time: " + timer.ToString ("0.00");
 		}
-		if (Input.GetKeyDown (KeyCode.Space) && startedGame == false) {
+		if ((Input.GetKeyDown (KeyCode.Space) || Input.GetTouch(0).phase == TouchPhase.Began) && startedGame == false) {
 			startedGame = true;
 			glassCeiling.SetActive(false);
 			glassCeiling.transform.position = new Vector3(0, 3.5f, 0);

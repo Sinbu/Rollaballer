@@ -27,14 +27,20 @@ public class PlayerController : MonoBehaviour {
 
 	void FixedUpdate ()
 	{
-		float moveHorizontal = Input.GetAxis ("Horizontal");
-		float moveVertical = Input.GetAxis ("Vertical");
+		Vector3 movement;
 
-		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+		if (SystemInfo.deviceType == DeviceType.Handheld) {
+			movement = new Vector3 (Input.acceleration.x, 0.0f, Input.acceleration.y);
+		} else {
+			float moveHorizontal = Input.GetAxis ("Horizontal");
+			float moveVertical = Input.GetAxis ("Vertical");
+			movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+		}
+
 
 		rb.AddForce (movement * speed);
 
-		// transform.Translate(Input.acceleration.x, 0, -Input.acceleration.z);
+
 	}
 
 	void Update() {
@@ -49,6 +55,30 @@ public class PlayerController : MonoBehaviour {
 				return;
 			}
 			CameraController.zoomFactor = 1.0f;
+		}
+
+		// Mobile
+		if (Input.touchCount > 0)
+		{
+			if (Input.GetTouch (0).phase == TouchPhase.Began) {
+				if (IsGrounded ()) {
+					rb.AddForce (new Vector3 (0.0f, jumpHeight, 0.0f) * speed);
+				}
+			}
+			/*
+			if (Input.GetTouch(i).phase == TouchPhase.Canceled)
+			{
+			}
+			if (Input.GetTouch(i).phase == TouchPhase.Ended)
+			{
+			}
+			if (Input.GetTouch(i).phase == TouchPhase.Moved)
+			{
+			}
+			if (Input.GetTouch(i).phase == TouchPhase.Stationary)
+			{
+			}
+			*/
 		}
 	}
 

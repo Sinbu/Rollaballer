@@ -36,8 +36,10 @@ public class General : MonoBehaviour {
 		winText.text = "";
 		if (SystemInfo.deviceType == DeviceType.Handheld) {
 			hint1.text = "Tap = Jump";
+			countdownText.text = "Tap to Start";
 		} else {
 			hint1.text = "Space = Jump";
+			countdownText.text = "Press Space to Start";
 		}
 	}
 
@@ -65,10 +67,16 @@ public class General : MonoBehaviour {
 			timer += Time.deltaTime;
 			timeText.text = "Time: " + timer.ToString ("0.00");
 		}
-		if ((Input.GetKeyDown (KeyCode.Space) || Input.GetTouch(0).phase == TouchPhase.Began) && startedGame == false) {
+		if (SystemInfo.deviceType == DeviceType.Handheld) {
+			if ((Input.GetTouch (0).phase == TouchPhase.Began) && startedGame == false) {
+				startedGame = true;
+				glassCeiling.SetActive (false);
+				glassCeiling.transform.position = new Vector3 (0, 3.5f, 0);
+			}
+		} else if (Input.GetKeyDown (KeyCode.Space) && startedGame == false) {
 			startedGame = true;
-			glassCeiling.SetActive(false);
-			glassCeiling.transform.position = new Vector3(0, 3.5f, 0);
+			glassCeiling.SetActive (false);
+			glassCeiling.transform.position = new Vector3 (0, 3.5f, 0);
 		}
 	}
 

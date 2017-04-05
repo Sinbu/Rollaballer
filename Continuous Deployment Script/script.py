@@ -18,18 +18,18 @@ def lambda_handler(event, context):
 	print primaryLink
 	results = requests.get(primaryLink)
 	zip = zipfile.ZipFile(StringIO.StringIO(results.content))
-	zip.extractall("./tmp/")
+	zip.extractall("/tmp/")
 
-	f = open("./tmp/WebGL build/index.html",'rb')
+	f = open("/tmp/WebGL build/index.html",'rb')
 	conn.upload('index.html',f,'rollerballer')
 
-	files = os.listdir("./tmp/WebGL build/Build")
+	files = os.listdir("/tmp/WebGL build/Build")
 	for filename in files:
-		f = open("./tmp/WebGL build/Build/" + filename,'rb')
+		f = open("/tmp/WebGL build/Build/" + filename,'rb')
 		conn.upload("Build/" + filename,f,'rollerballer')
 	files = os.listdir("tmp/WebGL build/TemplateData")
 	for filename in files:
-		f = open("./tmp/WebGL build/TemplateData/" + filename,'rb')
+		f = open("/tmp/WebGL build/TemplateData/" + filename,'rb')
 		conn.upload("TemplateData/" + filename,f,'rollerballer')
 
 	return "Done"

@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour {
 
 	// Stuff for ball texture
 	private bool scaleSwitch;
-	private Vector2 uvAnimationRate = new Vector2( 2.0f, 2.0f );
+	private Vector2 uvAnimationRate = new Vector2( 0.5f, 0.5f );
 	Vector2 uvOffset = Vector2.zero;
 
 	void Start ()
@@ -131,8 +131,8 @@ public class PlayerController : MonoBehaviour {
 
 			if( this.rendererComponent.enabled )
 			{
-				// this.rendererComponent.material.SetTextureOffset("_MainTex", uvOffset );
-				this.rendererComponent.materials[0].SetTextureScale ("_MainTex", uvOffset);
+				this.rendererComponent.materials[0].SetTextureOffset("_MainTex", uvOffset );
+				//this.rendererComponent.materials[0].SetTextureScale ("_MainTex", uvOffset);
 			}
 		}
 	}

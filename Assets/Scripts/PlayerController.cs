@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour {
 	private General generalObject;
 	private Rigidbody rb;
 	private float distToGround;
+	private Vector3 playerLastPosition;
 
 	void Start ()
 	{
@@ -44,6 +45,17 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Update() {
+		// Record players last known location
+		if (IsGrounded ()) {
+			playerLastPosition = this.transform.position;
+		}
+		// Return player if they are out of bounds TODO: Do this better
+		if (this.transform.position.y <= -5.0f) {
+			rb.velocity = Vector3.zero;
+			rb.angularVelocity = Vector3.zero; 
+			this.transform.position = playerLastPosition;
+		}
+
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			if (IsGrounded()) {
 				rb.AddForce (new Vector3 (0.0f, jumpHeight, 0.0f) * speed);

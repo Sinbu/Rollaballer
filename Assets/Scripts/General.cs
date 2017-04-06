@@ -60,7 +60,7 @@ public class General : MonoBehaviour {
 				countText.enabled = true;
 				timeText.enabled = true;
 				countdownText.enabled = false;
-				glassCeiling.SetActive(true);
+				// glassCeiling.SetActive(true);
 			}
 		}
 		if (startedGame == null && endedGame == false) {

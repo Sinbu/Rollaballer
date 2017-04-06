@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
@@ -78,6 +79,13 @@ public class PlayerController : MonoBehaviour {
 			}
 			CameraController.zoomFactor = 1.0f;
 		}
+
+        // TODO(sky): Is this really an approriate place for meta controls like this?
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            // TODO(sky): The lighting goes weird after a reload.
+            SceneManager.LoadScene("Minigame");
+        }
 
 		// Mobile
 		if (Input.touchCount > 0)

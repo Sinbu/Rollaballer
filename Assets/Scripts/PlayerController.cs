@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour {
 			playerLastPosition = this.transform.position;
 		}
 		// Return player if they are out of bounds TODO: Do this better
-		if (this.transform.position.y <= -5.0f) {
+		if (this.transform.position.y <= playerLastPosition.y - 10.0f) {
 			rb.velocity = Vector3.zero;
 			rb.angularVelocity = Vector3.zero; 
 			this.transform.position = playerLastPosition;

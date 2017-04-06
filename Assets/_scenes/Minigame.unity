@@ -446,6 +446,7 @@ MonoBehaviour:
   speed: 10
   jumpHeight: 20
   countText: {fileID: 1046868442}
+  jumpMaterial: {fileID: 2100000, guid: 1fa93e86e32d84db28c260afcbf41d45, type: 2}
 --- !u!54 &219712364
 Rigidbody:
   m_ObjectHideFlags: 0

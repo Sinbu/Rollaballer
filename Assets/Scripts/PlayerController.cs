@@ -7,15 +7,25 @@ public class PlayerController : MonoBehaviour {
 	public float speed;
 	public float jumpHeight;
 	public Text countText;
+	public Material jumpMaterial;
 
 	private General generalObject;
 	private Rigidbody rb;
+	private Renderer rendererComponent;
 	private float distToGround;
 	private Vector3 playerLastPosition;
+
+	private bool gotJumpPowerup = false;
+
+	// Stuff for ball texture
+	private bool scaleSwitch;
+	private Vector2 uvAnimationRate = new Vector2( 2.0f, 2.0f );
+	Vector2 uvOffset = Vector2.zero;
 
 	void Start ()
 	{
 		rb = GetComponent<Rigidbody>();
+		rendererComponent = GetComponent<Renderer> ();
 		generalObject = GameObject.Find ("General Scripts").GetComponent<General> ();
 		distToGround = 0.5f;
 
@@ -94,6 +104,31 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	void LateUpdate() {
+		// Stuff for the jump powerup texture
+		if (gotJumpPowerup){
+			Vector2 step = (uvAnimationRate * Time.deltaTime);
+
+			// Ternary operation... boo ya (this makes the code unreadable, but basically if switch is true, it subtracts the texture scale, and false, the other way
+			uvOffset += scaleSwitch ? -step : step;
+
+			if (uvOffset.y >= 10 || uvOffset.y <= 0) {
+				scaleSwitch = !scaleSwitch;
+				if (uvOffset.y >= 10) {
+					uvOffset.y = uvOffset.x = 10;
+				} else if (uvOffset.y <= 0) {
+					uvOffset.y = uvOffset.x = 0;
+				}
+			}
+
+			if( this.rendererComponent.enabled )
+			{
+				// this.rendererComponent.material.SetTextureOffset("_MainTex", uvOffset );
+				this.rendererComponent.materials[0].SetTextureScale ("_MainTex", uvOffset);
+			}
+		}
+	}
+
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.CompareTag ("Pick Up")) {
 			// Destroy (other.gameObject);
@@ -102,6 +137,8 @@ public class PlayerController : MonoBehaviour {
 		}
 		if (other.gameObject.CompareTag ("JumpPowerup")) {
 			other.gameObject.SetActive (false);
+			this.gotJumpPowerup = true;
+			this.rendererComponent.materials = new Material[] {jumpMaterial};
 			this.jumpHeight = 30;
 		}
 	}

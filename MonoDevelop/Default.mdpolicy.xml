@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Policies>
+  <PolicySet name="Default" id="Default">
+    <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp">
+      <FileWidth>160</FileWidth>
+    </TextStylePolicy>
+    <CSharpFormattingPolicy inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp">
+      <IndentSwitchBody>True</IndentSwitchBody>
+      <IndentBlocksInsideExpressions>True</IndentBlocksInsideExpressions>
+      <NamespaceBraceStyle>EndOfLine</NamespaceBraceStyle>
+      <ClassBraceStyle>EndOfLine</ClassBraceStyle>
+      <InterfaceBraceStyle>EndOfLine</InterfaceBraceStyle>
+      <StructBraceStyle>EndOfLine</StructBraceStyle>
+      <EnumBraceStyle>EndOfLine</EnumBraceStyle>
+      <MethodBraceStyle>EndOfLine</MethodBraceStyle>
+      <ConstructorBraceStyle>EndOfLine</ConstructorBraceStyle>
+      <DestructorBraceStyle>EndOfLine</DestructorBraceStyle>
+      <PropertyBraceStyle>NextLine</PropertyBraceStyle>
+      <ArrayInitializerWrapping>DoNotChange</ArrayInitializerWrapping>
+      <ArrayInitializerBraceStyle>NextLine</ArrayInitializerBraceStyle>
+      <BeforeMethodDeclarationParentheses>False</BeforeMethodDeclarationParentheses>
+      <BeforeMethodCallParentheses>False</BeforeMethodCallParentheses>
+      <BeforeConstructorDeclarationParentheses>False</BeforeConstructorDeclarationParentheses>
+      <NewLineBeforeConstructorInitializerColon>NewLine</NewLineBeforeConstructorInitializerColon>
+      <NewLineAfterConstructorInitializerColon>SameLine</NewLineAfterConstructorInitializerColon>
+      <BeforeDelegateDeclarationParentheses>False</BeforeDelegateDeclarationParentheses>
+      <NewParentheses>False</NewParentheses>
+      <SpacesBeforeBrackets>False</SpacesBeforeBrackets>
+      <MethodCallArgumentWrapping>WrapIfTooLong</MethodCallArgumentWrapping>
+      <AlignToFirstMethodCallArgument>True</AlignToFirstMethodCallArgument>
+      <MethodDeclarationParameterWrapping>WrapIfTooLong</MethodDeclarationParameterWrapping>
+    </CSharpFormattingPolicy>
+  </PolicySet>
+</Policies>

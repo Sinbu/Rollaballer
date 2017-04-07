@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public sealed class General : MonoBehaviour {
     // Singleton - There should only be one general script (sky hates the name of the class)
-    private static General _instance;
+    private static General instance;
 
-    public static General sharedInstance { get { return _instance; } }
+    public static General Instance { get { return instance; } }
 
     public Text countdownText;
     public Text countText;
@@ -30,17 +30,17 @@ public sealed class General : MonoBehaviour {
 
 
     private void Awake() {
-        if (_instance != null && _instance != this) {
+        if (instance != null && instance != this) {
             print("Destroying game object: " + this.gameObject);
             Destroy(this.gameObject);
         } else {
-            _instance = this;
+            instance = this;
         }
     }
 
     private void OnDestroy() {
-        if (this == _instance) {
-            _instance = null;
+        if (this == instance) {
+            instance = null;
         }
     }
 

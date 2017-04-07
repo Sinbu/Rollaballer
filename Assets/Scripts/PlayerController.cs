@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
@@ -70,11 +69,6 @@ public class PlayerController : MonoBehaviour {
                 return;
             }
             CameraController.zoomFactor = 1.0f;
-        }
-
-        // TODO(sky): Is this really an approriate place for meta controls like this?
-        if (Input.GetKeyDown(KeyCode.R)) {
-            SceneManager.LoadScene("Minigame");
         }
 
         // Mobile

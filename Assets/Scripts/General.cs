@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class General : MonoBehaviour {
+    // Singleton - There should only be one general script (sky hates the name)
+    private static General instance;
+
     public Text countdownText;
     public Text countText;
     public Text timeText;
@@ -21,6 +25,19 @@ public class General : MonoBehaviour {
     // Timers
     private float startTime = 3.0f;
     private float timer = 0.0f;
+
+
+    private General() {
+    }
+
+    public static General sharedInstance {
+        get {
+            if (instance == null) {
+                instance = new General();
+            }
+            return instance;
+        }
+    }
 
     void Start() {
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
@@ -40,6 +57,10 @@ public class General : MonoBehaviour {
     }
 
     void Update() {
+        // Can restart game at any time
+        if (Input.GetKeyDown(KeyCode.R)) {
+            SceneManager.LoadScene("Minigame");
+        }
         if (startedGame == true) {
             startTime -= Time.deltaTime;
             if (startTime >= 2) {

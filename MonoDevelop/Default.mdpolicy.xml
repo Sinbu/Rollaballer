@@ -15,7 +15,7 @@
       <MethodBraceStyle>EndOfLine</MethodBraceStyle>
       <ConstructorBraceStyle>EndOfLine</ConstructorBraceStyle>
       <DestructorBraceStyle>EndOfLine</DestructorBraceStyle>
-      <PropertyBraceStyle>NextLine</PropertyBraceStyle>
+      <PropertyBraceStyle>EndOfLine</PropertyBraceStyle>
       <ArrayInitializerWrapping>DoNotChange</ArrayInitializerWrapping>
       <ArrayInitializerBraceStyle>NextLine</ArrayInitializerBraceStyle>
       <BeforeMethodDeclarationParentheses>False</BeforeMethodDeclarationParentheses>

@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class General : MonoBehaviour {
-    // Singleton - There should only be one general script (sky hates the name)
-    private static General instance;
+public sealed class General : MonoBehaviour {
+    // Singleton - There should only be one general script (sky hates the name of the class)
+    private static General _instance;
+
+    public static General sharedInstance { get { return _instance; } }
 
     public Text countdownText;
     public Text countText;
@@ -27,15 +29,18 @@ public class General : MonoBehaviour {
     private float timer = 0.0f;
 
 
-    private General() {
+    private void Awake() {
+        if (_instance != null && _instance != this) {
+            print("Destroying game object: " + this.gameObject);
+            Destroy(this.gameObject);
+        } else {
+            _instance = this;
+        }
     }
 
-    public static General sharedInstance {
-        get {
-            if (instance == null) {
-                instance = new General();
-            }
-            return instance;
+    private void OnDestroy() {
+        if (this == _instance) {
+            _instance = null;
         }
     }
 

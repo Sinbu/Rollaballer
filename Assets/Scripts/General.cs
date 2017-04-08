@@ -9,7 +9,6 @@ public sealed class General : MonoBehaviour {
     private static General instance;
 
     public static General Instance { get { return instance; } }
-
     public Text countdownText;
     public Text countText;
     public Text timeText;
@@ -21,7 +20,7 @@ public sealed class General : MonoBehaviour {
     private int pickupCount = -1;
 
     // States
-    private bool? startedGame = false;
+    private bool? startedGame = null;
     private bool endedGame = false;
 
     // Timers
@@ -66,7 +65,7 @@ public sealed class General : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.R)) {
             SceneManager.LoadScene("Minigame");
         }
-        if (startedGame == true) {
+        if (startedGame == false) {
             startTime -= Time.deltaTime;
             if (startTime >= 2) {
                 countdownText.text = "3!!!";
@@ -76,25 +75,25 @@ public sealed class General : MonoBehaviour {
                 countdownText.text = "1!";
             }
             if (startTime <= 0) { 
-                startedGame = null; // This is terrible
+                startedGame = true; // This is terrible
                 playerController.enabled = true;
                 countText.enabled = true;
                 timeText.enabled = true;
                 countdownText.enabled = false;
             }
         }
-        if (startedGame == null && endedGame == false) {
+        if (startedGame == true && endedGame == false) {
             timer += Time.deltaTime;
             timeText.text = "Time: " + timer.ToString("0.00");
         }
         if (SystemInfo.deviceType == DeviceType.Handheld) {
-            if ((Input.GetTouch(0).phase == TouchPhase.Began) && startedGame == false) {
-                startedGame = true;
+            if ((Input.GetTouch(0).phase == TouchPhase.Began) && startedGame == null) {
+                startedGame = false;
                 glassCeiling.SetActive(false);
                 glassCeiling.transform.position = new Vector3(0, 3.5f, 0);
             }
-        } else if (Input.GetKeyDown(KeyCode.Space) && startedGame == false) {
-            startedGame = true;
+        } else if (Input.GetKeyDown(KeyCode.Space) && startedGame == null) {
+            startedGame = false;
             glassCeiling.SetActive(false);
             glassCeiling.transform.position = new Vector3(0, 3.5f, 0);
         }

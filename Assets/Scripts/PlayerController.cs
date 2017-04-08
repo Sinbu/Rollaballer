@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
@@ -26,11 +25,11 @@ public class PlayerController : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         rendererComponent = GetComponent<Renderer>();
         generalObject = GameObject.Find("General Scripts").GetComponent<General>();
-        distToGround = 0.5f;
     }
 
     bool IsGrounded() {
-        return Physics.Raycast(this.transform.position, -Vector3.up, distToGround + 0.1f);
+        // return Physics.Raycast(this.transform.position, Vector3.down, 0.6f);
+        return Physics.SphereCast(new Ray(this.transform.position, Vector3.down),0.3f,0.3f);
     }
 
     void FixedUpdate() {
@@ -70,11 +69,6 @@ public class PlayerController : MonoBehaviour {
                 return;
             }
             CameraController.zoomFactor = 1.0f;
-        }
-
-        // TODO(sky): Is this really an approriate place for meta controls like this?
-        if (Input.GetKeyDown(KeyCode.R)) {
-            SceneManager.LoadScene("Minigame");
         }
 
         // Mobile

@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 23588053922188368}
   - component: {fileID: 114695657673015068}
   - component: {fileID: 54485428294605886}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Pick Up
   m_TagString: Pick Up
   m_Icon: {fileID: 0}
@@ -74,6 +74,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &33020664996646560
 MeshFilter:

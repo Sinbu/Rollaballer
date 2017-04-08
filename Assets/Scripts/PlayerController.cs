@@ -25,11 +25,11 @@ public class PlayerController : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         rendererComponent = GetComponent<Renderer>();
         generalObject = GameObject.Find("General Scripts").GetComponent<General>();
-        distToGround = 0.5f;
     }
 
     bool IsGrounded() {
-        return Physics.Raycast(this.transform.position, -Vector3.up, distToGround + 0.1f);
+        // return Physics.Raycast(this.transform.position, Vector3.down, 0.6f);
+        return Physics.SphereCast(new Ray(this.transform.position, Vector3.down),0.3f,0.3f);
     }
 
     void FixedUpdate() {

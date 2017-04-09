@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Player with Jump Powerup
+  m_Name: Player with Boost Powerup
   m_Shader: {fileID: 30, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _EMISSION _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
   m_LightmapFlags: 1
@@ -38,9 +38,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 1, y: 1}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 7d4f51d0d735347778bcbd684c1de855, type: 3}
+        m_Texture: {fileID: 2800000, guid: 89334435058d24fd3a201c67185ee25f, type: 3}
         m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 4, y: 4}
+        m_Offset: {x: 1, y: 1}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}

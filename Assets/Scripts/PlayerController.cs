@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
     public float speed;
     public float jumpHeight;
     public Text countText;
+    public Material standardBallMaterial;
     public Material jumpMaterial;
+    public Material boostMaterial;
+    public Material cameraMaterial;
 
     private General generalObject;
     private Rigidbody rb;
@@ -15,6 +19,9 @@ public class PlayerController : MonoBehaviour {
     private Vector3 playerLastPosition;
 
     private bool gotJumpPowerup = false;
+    private bool gotCameraPowerup = false;
+    private bool gotBoostPowerup = false;
+    private int powerupCount = 0;
 
     // Stuff for ball texture
     private bool scaleSwitch;
@@ -29,7 +36,7 @@ public class PlayerController : MonoBehaviour {
 
     bool IsGrounded() {
         // return Physics.Raycast(this.transform.position, Vector3.down, 0.6f);
-        return Physics.SphereCast(new Ray(this.transform.position, Vector3.down),0.3f,0.3f);
+        return Physics.SphereCast(new Ray(this.transform.position, Vector3.down), 0.3f, 0.3f);
     }
 
     void FixedUpdate() {
@@ -97,7 +104,7 @@ public class PlayerController : MonoBehaviour {
 
     void LateUpdate() {
         // Stuff for the jump powerup texture
-        if (gotJumpPowerup) {
+        if (this.gotJumpPowerup || this.gotCameraPowerup || this.gotBoostPowerup) {
             Vector2 step = (uvAnimationRate * Time.deltaTime);
 
             // Ternary operation... boo ya (this makes the code unreadable, but basically if switch is true, it subtracts the texture scale, and false, the other way
@@ -113,7 +120,15 @@ public class PlayerController : MonoBehaviour {
             }
 
             if (this.rendererComponent.enabled) {
-                this.rendererComponent.materials[0].SetTextureOffset("_MainTex", uvOffset);
+                if (powerupCount >= 1) {
+                    this.rendererComponent.materials[0].SetTextureOffset("_MainTex", uvOffset);
+                }
+                if (powerupCount >= 2) {
+                    this.rendererComponent.materials[1].SetTextureOffset("_MainTex", -uvOffset);
+                }
+                if (powerupCount == 3) {
+                    this.rendererComponent.materials[2].SetTextureOffset("_MainTex", uvOffset * 2);
+                }
             }
         }
     }
@@ -125,9 +140,44 @@ public class PlayerController : MonoBehaviour {
         }
         if (other.gameObject.CompareTag("JumpPowerup")) {
             this.gotJumpPowerup = true;
-            this.rendererComponent.materials = new Material[] { jumpMaterial };
+            this.rendererComponent.materials = RenderBallAfterPowerup();
             this.jumpHeight = 30;
             Destroy(other.gameObject);
         }
+        if (other.gameObject.CompareTag("CameraPowerup")) {
+            this.gotCameraPowerup = true;
+            this.rendererComponent.materials = RenderBallAfterPowerup();
+            // TODO: Implement Camera Powerup
+            Destroy(other.gameObject);
+        }
+        if (other.gameObject.CompareTag("BoostPowerup")) {
+            this.gotBoostPowerup = true;
+            this.rendererComponent.materials = RenderBallAfterPowerup();
+            // TODO: Implement boost
+            Destroy(other.gameObject);
+        }
+    }
+
+    // Helper functions
+    private Material[] RenderBallAfterPowerup() {
+        // Will color the ball and set the count for powerups
+        var materials = new List<Material>();
+        powerupCount = 0;
+
+        if (this.gotJumpPowerup) {
+            materials.Add(jumpMaterial);
+            powerupCount++;
+        }
+        if (this.gotCameraPowerup) {
+            materials.Add(cameraMaterial);
+            powerupCount++;
+        }
+        if (this.gotBoostPowerup) {
+            materials.Add(boostMaterial);
+            powerupCount++;
+        }
+        materials.Add(standardBallMaterial);
+
+        return materials.ToArray();
     }
 }

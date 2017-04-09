@@ -7,6 +7,8 @@ TagManager:
   - Pick Up
   - Stairs
   - JumpPowerup
+  - CameraPowerup
+  - BoostPowerup
   layers:
   - Default
   - TransparentFX

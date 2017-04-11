@@ -28,6 +28,12 @@ public class PlayerController : MonoBehaviour {
     private Vector2 uvAnimationRate = new Vector2(0.5f, 0.5f);
     Vector2 uvOffset = Vector2.zero;
 
+    private void Awake()
+    {
+        //QualitySettings.vSyncCount = 0;
+        //Application.targetFrameRate = 300;
+    }
+
     void Start() {
         rb = GetComponent<Rigidbody>();
         rendererComponent = GetComponent<Renderer>();
@@ -60,6 +66,7 @@ public class PlayerController : MonoBehaviour {
         }
         // Return player if they are out of bounds TODO: Do this better
         if (this.transform.position.y <= playerLastPosition.y - 10.0f) {
+            print("RETURN");
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero; 
             this.transform.position = playerLastPosition;
@@ -71,15 +78,12 @@ public class PlayerController : MonoBehaviour {
             }
         }
         if (Input.GetKeyDown(KeyCode.Z)) {
-            if (CameraController.zoomFactor == 1.0f) {
-                CameraController.zoomFactor = 0.5f;
-                return;
-            }
-            CameraController.zoomFactor = 1.0f;
+            CameraController.zoomFactor = CameraController.zoomFactor == 1.0f ? 0.5f : 1.0f;
         }
 
         // Mobile
         if (Input.touchCount > 0) {
+            print("touch");
             if (Input.GetTouch(0).phase == TouchPhase.Began) {
                 if (IsGrounded()) {
                     rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);

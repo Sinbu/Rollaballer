@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour {
     public GameObject player;
     public static float zoomFactor = 1.0f;
-
+    private float updateSpeed = 0.15f;
     private Vector3 offset;
 
     void Start() {
@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour {
     }
 
     void LateUpdate() {
-        transform.position = player.transform.position + (this.offset * zoomFactor);
+        Vector3 targetPosition = player.transform.position + (offset * zoomFactor);
+        transform.position = Vector3.Lerp(transform.position, targetPosition, updateSpeed);
     }
 }

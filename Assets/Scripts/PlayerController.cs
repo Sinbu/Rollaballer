@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour {
 
     bool IsGrounded() {
         // return Physics.Raycast(this.transform.position, Vector3.down, 0.6f);
-        return Physics.SphereCast(new Ray(this.transform.position, Vector3.down), 0.3f, 0.3f);
+        return Physics.SphereCast(new Ray(this.transform.position, Vector3.down), 0.2f, 0.4f);
     }
 
     void FixedUpdate() {
@@ -54,8 +54,8 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Update() {
-        // Record players last known location
-        if (IsGrounded()) {
+        // Record players last known location, using the center of the ball
+        if (Physics.Raycast(this.transform.position, Vector3.down, 0.6f)) {
             playerLastPosition = this.transform.position;
         }
         // Return player if they are out of bounds TODO: Do this better

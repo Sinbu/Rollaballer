@@ -71,11 +71,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
         if (Input.GetKeyDown(KeyCode.Z)) {
-            if (CameraController.zoomFactor == 1.0f) {
-                CameraController.zoomFactor = 0.5f;
-                return;
-            }
-            CameraController.zoomFactor = 1.0f;
+            CameraController.zoomFactor = CameraController.zoomFactor == 1.0f ? 0.5f : 1.0f;
         }
 
         // Mobile

@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour {
 
     // Boost Power up
     private bool hasBoosted = false;
-    private float boostCooldownMaxtime = 4.0f;
+    private float boostCooldownMaxtime = 2.0f;
     private float boostCooldownTimer = 0.0f;
 
     // Stuff for ball texture
@@ -67,6 +67,7 @@ public class PlayerController : MonoBehaviour {
         if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false && IsGrounded()) {
             this.hasBoosted = true;
             Vector3 nVelocity = playerLastMovement.normalized;
+            this.rb.velocity = Vector3.zero;
             Vector3 boostSpeed = nVelocity * 400;
             this.rb.AddForce(boostSpeed);
             this.boostCooldownTimer = this.boostCooldownMaxtime;

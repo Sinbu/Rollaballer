@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -66,15 +66,7 @@ public class PlayerController : MonoBehaviour {
 
         // Boost powerup used
         if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false && IsGrounded()) {
-            this.hasBoosted = true;
-            Vector3 normalizedMovement = playerLastMovement.normalized;
-
-            // Strip away all velocity not in the direction of desired movement.
-            rb.velocity = normalizedMovement * Mathf.Max(Vector3.Dot(normalizedMovement, rb.velocity), 0);
-
-            this.rb.AddForce(normalizedMovement * boostForce);
-            this.boostCooldownTimer = this.boostCooldownMaxtime;
-            this.RenderBallAfterPowerup();
+            this.Boost();
         }
 
         // Record players last known location, using the center of the ball
@@ -96,9 +88,8 @@ public class PlayerController : MonoBehaviour {
             this.transform.position = playerLastPosition;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) {
-            rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
-
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            this.Jump();
         }
         if (Input.GetKeyDown(KeyCode.Z)) {
             CameraController.zoomFactor = CameraController.zoomFactor == 1.0f ? 0.5f : 1.0f;
@@ -114,10 +105,11 @@ public class PlayerController : MonoBehaviour {
 
         // Mobile
         if (Input.touchCount > 0) {
-            if (Input.GetTouch(0).phase == TouchPhase.Began) {
-                if (IsGrounded()) {
-                    rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
-                }
+            if (Input.GetTouch(0).phase == TouchPhase.Began && Input.touchCount == 1) {
+                this.Jump();
+            }
+            if (Input.GetTouch(0).phase == TouchPhase.Began && Input.touchCount == 2) {
+                this.Boost();
             }
             /*
 			if (Input.GetTouch(i).phase == TouchPhase.Canceled)
@@ -193,6 +185,26 @@ public class PlayerController : MonoBehaviour {
     }
 
     // Helper functions
+    private void Jump(bool ignoreIfGrounded = false) {
+        if (this.IsGrounded() || ignoreIfGrounded) {
+            this.rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
+        }
+    }
+
+    private void Boost(bool ignoreIfGrounded = false) {
+        if ((this.IsGrounded() || ignoreIfGrounded) && this.gotBoostPowerup && this.hasBoosted == false) {
+            this.hasBoosted = true;
+            Vector3 normalizedMovement = playerLastMovement.normalized;
+
+            // Strip away all velocity not in the direction of desired movement.
+            rb.velocity = normalizedMovement * Mathf.Max(Vector3.Dot(normalizedMovement, rb.velocity), 0);
+
+            this.rb.AddForce(normalizedMovement * boostForce);
+            this.boostCooldownTimer = this.boostCooldownMaxtime;
+            this.RenderBallAfterPowerup();
+        }
+    }
+
     private void RenderBallAfterPowerup() {
         // Will color the ball and set the count for powerups
         var materials = new List<Material>();

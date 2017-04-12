@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     public Material standardBallMaterial;
     public Material jumpMaterial;
     public Material boostMaterial;
+    public Material boostMaterialUsed;
     public Material cameraMaterial;
 
     private General generalObject;
@@ -17,11 +18,18 @@ public class PlayerController : MonoBehaviour {
     private Renderer rendererComponent;
     private float distToGround;
     private Vector3 playerLastPosition;
+    // private float softMaxVelocity = 2.0f;
+    private Vector3 playerLastMovement;
 
     private bool gotJumpPowerup = false;
     private bool gotCameraPowerup = false;
     private bool gotBoostPowerup = false;
     private int powerupCount = 0;
+
+    // Boost Power up
+    private bool hasBoosted = false;
+    private float boostCooldownMaxtime = 4.0f;
+    private float boostCooldownTimer = 0.0f;
 
     // Stuff for ball texture
     private bool scaleSwitch;
@@ -49,21 +57,36 @@ public class PlayerController : MonoBehaviour {
             float moveVertical = Input.GetAxis("Vertical");
             movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
         }
+        this.playerLastMovement = movement * speed;
             
-        rb.AddForce(movement * speed);
+        rb.AddForce(playerLastMovement);
+
+        // TODO: Add "speed limit" (top speed) here
+
+        // Boost powerup used
+        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false && IsGrounded()) {
+            this.hasBoosted = true;
+            Vector3 nVelocity = playerLastMovement.normalized;
+            Vector3 boostSpeed = nVelocity * 400;
+            this.rb.AddForce(boostSpeed);
+            this.boostCooldownTimer = this.boostCooldownMaxtime;
+            this.RenderBallAfterPowerup();
+        }
 
         // Record players last known location, using the center of the ball
         if (Physics.Raycast(this.transform.position, Vector3.down, 0.6f)) {
             playerLastPosition = this.transform.position;
 
-            /* For Debugging collisions (sp?)
-             * foreach(var ray in Physics.RaycastAll(this.transform.position, Vector3.down, 0.6f)){
+            // For Debugging collisions (sp?)
+            /* foreach(var ray in Physics.RaycastAll(this.transform.position, Vector3.down, 0.6f)){
              *  print(ray.transform.name);
             } */ 
         }
     }
 
     void Update() {
+        
+
         // Return player if they are out of bounds TODO: Do this better
         if (this.transform.position.y <= playerLastPosition.y - 10.0f) {
             rb.velocity = Vector3.zero;
@@ -71,13 +94,20 @@ public class PlayerController : MonoBehaviour {
             this.transform.position = playerLastPosition;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            if (IsGrounded()) {
-                rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
-            }
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded()) {
+            rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
+
         }
         if (Input.GetKeyDown(KeyCode.Z)) {
             CameraController.zoomFactor = CameraController.zoomFactor == 1.0f ? 0.5f : 1.0f;
+        }
+
+        // Boost Cooldown
+        if (this.boostCooldownTimer > 0) {
+            this.boostCooldownTimer -= Time.deltaTime;
+        } else {
+            this.hasBoosted = false;
+            this.RenderBallAfterPowerup();
         }
 
         // Mobile
@@ -142,26 +172,26 @@ public class PlayerController : MonoBehaviour {
         }
         if (other.gameObject.CompareTag("JumpPowerup")) {
             this.gotJumpPowerup = true;
-            this.rendererComponent.materials = RenderBallAfterPowerup();
+            this.RenderBallAfterPowerup();
             this.jumpHeight = 30;
             Destroy(other.gameObject);
         }
         if (other.gameObject.CompareTag("CameraPowerup")) {
             this.gotCameraPowerup = true;
-            this.rendererComponent.materials = RenderBallAfterPowerup();
+            this.RenderBallAfterPowerup();
             // TODO: Implement Camera Powerup
             Destroy(other.gameObject);
         }
         if (other.gameObject.CompareTag("BoostPowerup")) {
             this.gotBoostPowerup = true;
-            this.rendererComponent.materials = RenderBallAfterPowerup();
+            this.RenderBallAfterPowerup();
             // TODO: Implement boost
             Destroy(other.gameObject);
         }
     }
 
     // Helper functions
-    private Material[] RenderBallAfterPowerup() {
+    private void RenderBallAfterPowerup() {
         // Will color the ball and set the count for powerups
         var materials = new List<Material>();
         powerupCount = 0;
@@ -175,11 +205,16 @@ public class PlayerController : MonoBehaviour {
             powerupCount++;
         }
         if (this.gotBoostPowerup) {
-            materials.Add(boostMaterial);
+            if (this.hasBoosted == true) {
+                // Cooldown state
+                materials.Add(boostMaterialUsed);
+            } else {
+                materials.Add(boostMaterial);
+            }
             powerupCount++;
         }
         materials.Add(standardBallMaterial);
 
-        return materials.ToArray();
+        this.rendererComponent.materials = materials.ToArray();
     }
 }

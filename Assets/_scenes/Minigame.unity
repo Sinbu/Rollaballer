@@ -470,8 +470,8 @@ MonoBehaviour:
     type: 2}
   jumpMaterial: {fileID: 2100000, guid: 1fa93e86e32d84db28c260afcbf41d45, type: 2}
   boostMaterial: {fileID: 2100000, guid: 45bc5ce80ad504abb908e8bc4ceb5437, type: 2}
+  boostMaterialUsed: {fileID: 2100000, guid: 87112616672654731827119f092ac204, type: 2}
   cameraMaterial: {fileID: 2100000, guid: b7fea0ad0ad4d4e0188e0246e7d43a7a, type: 2}
-  playerLastPosition: {x: 0, y: 0, z: 0}
 --- !u!54 &219712364
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1935,7 +1935,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1099009432}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.3, y: 1, z: 7}
+  m_LocalPosition: {x: -7.97, y: 0.81, z: -0.03}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 1479903598}
@@ -1961,7 +1961,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1099009432}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a654de8543ee446a1b05db65a185fcc1, type: 3}
   m_Name: 

@@ -27,7 +27,6 @@ public sealed class General : MonoBehaviour {
     private float startTime = 3.0f;
     private float timer = 0.0f;
 
-
     private void Awake() {
         if (instance != null && instance != this) {
             print("Destroying game object: " + this.gameObject);

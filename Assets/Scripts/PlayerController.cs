@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour {
     private bool hasBoosted = false;
     private float boostCooldownMaxtime = 2.0f;
     private float boostCooldownTimer = 0.0f;
+    private float boostForce = 400.0f;
 
     // Stuff for ball texture
     private bool scaleSwitch;
@@ -64,7 +65,7 @@ public class PlayerController : MonoBehaviour {
         // TODO: Add "speed limit" (top speed) here
 
         // Boost powerup used
-        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) {
+        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false && IsGrounded()) {
             this.Boost();
         }
 
@@ -73,15 +74,13 @@ public class PlayerController : MonoBehaviour {
             playerLastPosition = this.transform.position;
 
             // For Debugging collisions (sp?)
-            /* foreach(var ray in Physics.RaycastAll(this.transform.position, Vector3.down, 0.6f)){
+            /* foreach(var ray in Physics.RaycastAll(this.transform.position, Vector3.down, 0.6f)) {
              *  print(ray.transform.name);
             } */ 
         }
     }
 
     void Update() {
-        
-
         // Return player if they are out of bounds TODO: Do this better
         if (this.transform.position.y <= playerLastPosition.y - 10.0f) {
             rb.velocity = Vector3.zero;
@@ -109,7 +108,7 @@ public class PlayerController : MonoBehaviour {
             if (Input.GetTouch(0).phase == TouchPhase.Began && Input.touchCount == 1) {
                 this.Jump();
             }
-            if (Input.GetTouch(0).phase == TouchPhase.Began&& Input.touchCount == 2) {
+            if (Input.GetTouch(0).phase == TouchPhase.Began && Input.touchCount == 2) {
                 this.Boost();
             }
             /*
@@ -195,10 +194,12 @@ public class PlayerController : MonoBehaviour {
     private void Boost(bool ignoreIfGrounded = false) {
         if ((this.IsGrounded() || ignoreIfGrounded) && this.gotBoostPowerup && this.hasBoosted == false) {
             this.hasBoosted = true;
-            Vector3 nVelocity = playerLastMovement.normalized;
-            this.rb.velocity = Vector3.zero;
-            Vector3 boostSpeed = nVelocity * 500;
-            this.rb.AddForce(boostSpeed);
+            Vector3 normalizedMovement = playerLastMovement.normalized;
+
+            // Strip away all velocity not in the direction of desired movement.
+            rb.velocity = normalizedMovement * Mathf.Max(Vector3.Dot(normalizedMovement, rb.velocity), 0);
+
+            this.rb.AddForce(normalizedMovement * boostForce);
             this.boostCooldownTimer = this.boostCooldownMaxtime;
             this.RenderBallAfterPowerup();
         }

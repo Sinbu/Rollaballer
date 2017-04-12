@@ -9,6 +9,8 @@ TagManager:
   - JumpPowerup
   - CameraPowerup
   - BoostPowerup
+  - Crusher
+  - Platform
   layers:
   - Default
   - TransparentFX

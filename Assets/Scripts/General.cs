@@ -15,6 +15,7 @@ public sealed class General : MonoBehaviour {
     public Text winText;
     public TextMesh hint1;
     public GameObject glassCeiling;
+    public GameObject platform2Entry;
 
     private PlayerController playerController;
     private int pickupCount = -1;
@@ -22,6 +23,10 @@ public sealed class General : MonoBehaviour {
     // States
     private bool? startedGame = null;
     private bool endedGame = false;
+    private bool passedPlatform1 = false;
+    // private bool passedPlatform2 = false;
+    // private bool passedPlatform3 = false;
+    // private bool passedPlatform4 = false;
 
     // Timers
     private float startTime = 3.0f;
@@ -102,6 +107,9 @@ public sealed class General : MonoBehaviour {
         this.pickupCount += 1;
         countText.text = "Count: " + pickupCount.ToString();
         if (pickupCount >= 13) {
+            this.passedPlatform1 = true;
+            this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            this.playerController.transform.position = platform2Entry.transform.position;
             endedGame = true;
             winText.text = "You win! Your Time: " + this.timer.ToString("0.000");
         }

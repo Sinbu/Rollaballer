@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour {
             movement = new Vector3(Input.acceleration.x, 0.0f, Input.acceleration.y);
         } else {
             float moveHorizontal = Input.GetAxis("Horizontal");
-            float moveVertical = Input.GetAxis("Vertical"); 
+            float moveVertical = Input.GetAxis("Vertical");
             movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
         }
             

@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour {
     private float distToGround;
     private Vector3 playerLastPosition;
     // private float softMaxVelocity = 2.0f;
-    private Vector3 playerLastMovement;
 
     private bool gotJumpPowerup = false;
     private bool gotCameraPowerup = false;
@@ -55,19 +54,13 @@ public class PlayerController : MonoBehaviour {
             movement = new Vector3(Input.acceleration.x, 0.0f, Input.acceleration.y);
         } else {
             float moveHorizontal = Input.GetAxis("Horizontal");
-            float moveVertical = Input.GetAxis("Vertical");
+            float moveVertical = Input.GetAxis("Vertical"); 
             movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
         }
-        this.playerLastMovement = movement * speed;
             
-        rb.AddForce(playerLastMovement);
+        rb.AddForce(movement * speed);
 
         // TODO: Add "speed limit" (top speed) here
-
-        // Boost powerup used
-        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false && IsGrounded()) {
-            this.Boost();
-        }
 
         // Record players last known location, using the center of the ball
         if (Physics.Raycast(this.transform.position, Vector3.down, 0.6f)) {
@@ -86,6 +79,11 @@ public class PlayerController : MonoBehaviour {
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero; 
             this.transform.position = playerLastPosition;
+        }
+
+        // Boost powerup used
+        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false && IsGrounded()) {
+            this.Boost();
         }
 
         if (Input.GetKeyDown(KeyCode.Space)) {
@@ -194,9 +192,10 @@ public class PlayerController : MonoBehaviour {
     private void Boost(bool ignoreIfGrounded = false) {
         if ((this.IsGrounded() || ignoreIfGrounded) && this.gotBoostPowerup && this.hasBoosted == false) {
             this.hasBoosted = true;
-            Vector3 normalizedMovement = playerLastMovement.normalized;
+            Vector3 normalizedMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 
             // Strip away all velocity not in the direction of desired movement.
+            rb.angularVelocity = Vector3.zero;
             rb.velocity = normalizedMovement * Mathf.Max(Vector3.Dot(normalizedMovement, rb.velocity), 0);
 
             this.rb.AddForce(normalizedMovement * boostForce);

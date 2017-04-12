@@ -9,6 +9,7 @@ public sealed class General : MonoBehaviour {
     private static General instance;
 
     public static General Instance { get { return instance; } }
+
     public Text countdownText;
     public Text countText;
     public Text timeText;

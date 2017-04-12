@@ -471,6 +471,7 @@ MonoBehaviour:
   jumpMaterial: {fileID: 2100000, guid: 1fa93e86e32d84db28c260afcbf41d45, type: 2}
   boostMaterial: {fileID: 2100000, guid: 45bc5ce80ad504abb908e8bc4ceb5437, type: 2}
   cameraMaterial: {fileID: 2100000, guid: b7fea0ad0ad4d4e0188e0246e7d43a7a, type: 2}
+  playerLastPosition: {x: 0, y: 0, z: 0}
 --- !u!54 &219712364
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1401,6 +1402,7 @@ GameObject:
   - component: {fileID: 654883833}
   - component: {fileID: 654883832}
   - component: {fileID: 654883831}
+  - component: {fileID: 654883835}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -1472,6 +1474,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &654883835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 654883830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a654de8543ee446a1b05db65a185fcc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topValue: 3
+  bottomValue: 0
+  speed: 0.5
 --- !u!1 &713071359
 GameObject:
   m_ObjectHideFlags: 0
@@ -1811,6 +1827,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 219712358}
+  updateSpeed: 0.15
+  shakeVelocityThreshold: 10
+  maxShakeDuration: 0.2
+  maxTranslateAmountStart: 0.2
+  maxRotateAmountStart: 4
+  shakeLeftTime: 0
 --- !u!1 &1046868440
 GameObject:
   m_ObjectHideFlags: 0

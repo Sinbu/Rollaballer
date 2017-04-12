@@ -51,13 +51,19 @@ public class PlayerController : MonoBehaviour {
         }
             
         rb.AddForce(movement * speed);
-    }
 
-    void Update() {
         // Record players last known location, using the center of the ball
         if (Physics.Raycast(this.transform.position, Vector3.down, 0.6f)) {
             playerLastPosition = this.transform.position;
+
+            /* For Debugging collisions (sp?)
+             * foreach(var ray in Physics.RaycastAll(this.transform.position, Vector3.down, 0.6f)){
+             *  print(ray.transform.name);
+            } */ 
         }
+    }
+
+    void Update() {
         // Return player if they are out of bounds TODO: Do this better
         if (this.transform.position.y <= playerLastPosition.y - 10.0f) {
             rb.velocity = Vector3.zero;

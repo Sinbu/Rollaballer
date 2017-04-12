@@ -13,10 +13,12 @@ public class VerticalMover : MonoBehaviour {
     }
 
     void Update() {
-        if (this.transform.position.y >= topValue) {
+        if (this.transform.position.y > topValue) {
+            this.transform.position = new Vector3(this.transform.position.x, topValue, this.transform.position.z);
             goingUp = false;
         }
-        if (this.transform.position.y <= bottomValue) {
+        if (this.transform.position.y < bottomValue) {
+            this.transform.position = new Vector3(this.transform.position.x, bottomValue, this.transform.position.z);
             goingUp = true;
         }
         if (goingUp == true) {

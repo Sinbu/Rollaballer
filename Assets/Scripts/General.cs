@@ -110,9 +110,16 @@ public sealed class General : MonoBehaviour {
         if (pickupCount >= 13) {
             this.passedPlatform1 = true;
             this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            this.playerController.transform.position = platform2Entry.transform.position;
+            SetPlayerToPlatform(2);
             endedGame = true;
             winText.text = "You win! Your Time: " + this.timer.ToString("0.000");
+        }
+    }
+
+    public void SetPlayerToPlatform(int platform = 0) {
+        // TODO: Implement this across the levels
+        if (platform == 2) {
+            this.playerController.transform.position = platform2Entry.transform.position;
         }
     }
 }

@@ -82,7 +82,8 @@ public class PlayerController : MonoBehaviour {
         }
         // Cheat TODO: make cheats a part of a global setting or something
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            // Go to platform 1
+            // Go to platform 1 with the 1 button on the keyboard
+            this.generalObject.SetPlayerToPlatform(1);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2)) {
             // Go to platform 2 with the 2 button on the keyboard
@@ -200,7 +201,7 @@ public class PlayerController : MonoBehaviour {
     private void Boost(bool ignoreIfGrounded = false) {
         if ((this.IsGrounded() || ignoreIfGrounded) && this.gotBoostPowerup && this.hasBoosted == false) {
             this.hasBoosted = true;
-            Vector3 normalizedMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalize;
+            Vector3 normalizedMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 
             // Strip away all velocity not in the direction of desired movement.
             rb.angularVelocity = Vector3.zero;

@@ -133,6 +133,14 @@ public class PlayerController : MonoBehaviour {
 			}
 			*/
         }
+
+        // Controller
+        if (Input.GetAxis("Xbox A Button") > 0) {
+            this.Jump();
+        }
+        if (Input.GetAxis("Xbox X and B Button") > 0) {
+            this.Boost(true);
+        }
     }
 
     void LateUpdate() {
@@ -192,14 +200,14 @@ public class PlayerController : MonoBehaviour {
     }
 
     // Helper functions
-    private void Jump(bool ignoreIfGrounded = false) {
-        if (this.IsGrounded() || ignoreIfGrounded) {
+    private void Jump(bool ignoreCheckingIfOnGround = false) {
+        if (this.IsGrounded() || ignoreCheckingIfOnGround) {
             this.rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
         }
     }
 
-    private void Boost(bool ignoreIfGrounded = false) {
-        if ((this.IsGrounded() || ignoreIfGrounded) && this.gotBoostPowerup && this.hasBoosted == false) {
+    private void Boost(bool ignoreCheckingIfOnGround = false) {
+        if ((this.IsGrounded() || ignoreCheckingIfOnGround) && this.gotBoostPowerup && this.hasBoosted == false) {
             this.hasBoosted = true;
             Vector3 normalizedMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 

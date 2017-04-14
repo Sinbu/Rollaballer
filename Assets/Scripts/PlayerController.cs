@@ -91,8 +91,8 @@ public class PlayerController : MonoBehaviour {
         }
 
         // Boost powerup used
-        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false && IsGrounded()) {
-            this.Boost();
+        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false) {
+            this.Boost(true);
         }
 
         if (Input.GetKeyDown(KeyCode.Space)) {
@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour {
                 this.Jump();
             }
             if (Input.GetTouch(0).phase == TouchPhase.Began && Input.touchCount == 2) {
-                this.Boost();
+                this.Boost(true);
             }
             /*
 			if (Input.GetTouch(i).phase == TouchPhase.Canceled)

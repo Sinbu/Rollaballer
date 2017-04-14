@@ -693,14 +693,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  jumpHeight: 20
   countText: {fileID: 1046868442}
   standardBallMaterial: {fileID: 2100000, guid: 5566d92c5ced64e4da6752bd545fade2,
     type: 2}
   jumpMaterial: {fileID: 2100000, guid: 1fa93e86e32d84db28c260afcbf41d45, type: 2}
+  jumpMaterialUsed: {fileID: 2100000, guid: 0d875ac9daa544ab9986c072a6a933c2, type: 2}
   boostMaterial: {fileID: 2100000, guid: 45bc5ce80ad504abb908e8bc4ceb5437, type: 2}
   boostMaterialUsed: {fileID: 2100000, guid: 87112616672654731827119f092ac204, type: 2}
   cameraMaterial: {fileID: 2100000, guid: b7fea0ad0ad4d4e0188e0246e7d43a7a, type: 2}
+  jumpHeight: 20
 --- !u!54 &219712364
 Rigidbody:
   m_ObjectHideFlags: 0

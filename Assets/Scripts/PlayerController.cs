@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
     public float speed;
-    public float jumpHeight;
+
     public Text countText;
     public Material standardBallMaterial;
     public Material jumpMaterial;
+    public Material jumpMaterialUsed;
     public Material boostMaterial;
     public Material boostMaterialUsed;
     public Material cameraMaterial;
@@ -24,6 +25,12 @@ public class PlayerController : MonoBehaviour {
     private bool gotCameraPowerup = false;
     private bool gotBoostPowerup = false;
     private int powerupCount = 0;
+
+    // Jump Cooldown
+    private bool hasJumped = false;
+    private float jumpCooldownMaxtime = 0.2f;
+    private float jumpCooldownTimer = 0.0f;
+    public float jumpHeight = 20.0f;
 
     // Boost Power up
     private bool hasBoosted = false;
@@ -101,7 +108,14 @@ public class PlayerController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Z)) {
             CameraController.zoomFactor = CameraController.zoomFactor == 1.0f ? 0.5f : 1.0f;
         }
-
+        // Jump Cooldown
+        if (this.jumpCooldownTimer > 0) {
+            this.jumpCooldownTimer -= Time.deltaTime;
+        } else {
+            this.hasJumped = false;
+            this.RenderBallAfterPowerup();
+        }
+            
         // Boost Cooldown
         if (this.boostCooldownTimer > 0) {
             this.boostCooldownTimer -= Time.deltaTime;
@@ -201,8 +215,11 @@ public class PlayerController : MonoBehaviour {
 
     // Helper functions
     private void Jump(bool ignoreCheckingIfOnGround = false) {
-        if (this.IsGrounded() || ignoreCheckingIfOnGround) {
+        if (this.IsGrounded() || ignoreCheckingIfOnGround && this.hasJumped == false) {
+            this.hasJumped = true;
             this.rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
+            this.jumpCooldownTimer = this.jumpCooldownMaxtime;
+            this.RenderBallAfterPowerup();
         }
     }
 
@@ -227,7 +244,11 @@ public class PlayerController : MonoBehaviour {
         powerupCount = 0;
 
         if (this.gotJumpPowerup) {
-            materials.Add(jumpMaterial);
+            if (this.hasJumped) {
+                materials.Add(jumpMaterialUsed);
+            } else {
+                materials.Add(jumpMaterial);
+            }
             powerupCount++;
         }
         if (this.gotCameraPowerup) {
@@ -235,7 +256,7 @@ public class PlayerController : MonoBehaviour {
             powerupCount++;
         }
         if (this.gotBoostPowerup) {
-            if (this.hasBoosted == true) {
+            if (this.hasBoosted) {
                 // Cooldown state
                 materials.Add(boostMaterialUsed);
             } else {

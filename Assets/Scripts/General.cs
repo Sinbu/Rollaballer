@@ -16,15 +16,17 @@ public sealed class General : MonoBehaviour {
     public Text winText;
     public TextMesh hint1;
     public GameObject glassCeiling;
+    public GameObject platform1Entry;
     public GameObject platform2Entry;
 
     private PlayerController playerController;
+    private Rigidbody playerRB;
     private int pickupCount = -1;
 
     // States
     private bool? startedGame = null;
     private bool endedGame = false;
-    private bool passedPlatform1 = false;
+    // private bool passedPlatform1 = false;
     // private bool passedPlatform2 = false;
     // private bool passedPlatform3 = false;
     // private bool passedPlatform4 = false;
@@ -50,6 +52,7 @@ public sealed class General : MonoBehaviour {
 
     void Start() {
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerRB = GameObject.Find("Player").GetComponent<Rigidbody>();
         playerController.enabled = false;
         countText.enabled = false;
         timeText.enabled = false;
@@ -108,11 +111,22 @@ public sealed class General : MonoBehaviour {
         this.pickupCount += 1;
         countText.text = "Count: " + pickupCount.ToString();
         if (pickupCount >= 13) {
-            this.passedPlatform1 = true;
+            // this.passedPlatform1 = true;
             this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            this.playerController.transform.position = platform2Entry.transform.position;
+            SetPlayerToPlatform(2);
             endedGame = true;
             winText.text = "You win! Your Time: " + this.timer.ToString("0.000");
         }
+    }
+
+    public void SetPlayerToPlatform(int platform = 1) {
+        // TODO: Implement this across the levels
+        if (platform == 1) {
+            this.playerController.transform.position = platform1Entry.transform.position;
+        }
+        if (platform == 2) {
+            this.playerController.transform.position = platform2Entry.transform.position;
+        }
+        playerRB.velocity = playerRB.angularVelocity = Vector3.zero;
     }
 }

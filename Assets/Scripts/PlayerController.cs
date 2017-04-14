@@ -80,10 +80,19 @@ public class PlayerController : MonoBehaviour {
             rb.angularVelocity = Vector3.zero; 
             this.transform.position = playerLastPosition;
         }
+        // Cheat TODO: make cheats a part of a global setting or something
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            // Go to platform 1 with the 1 button on the keyboard
+            this.generalObject.SetPlayerToPlatform(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            // Go to platform 2 with the 2 button on the keyboard
+            this.generalObject.SetPlayerToPlatform(2);
+        }
 
         // Boost powerup used
-        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false && IsGrounded()) {
-            this.Boost();
+        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false) {
+            this.Boost(true);
         }
 
         if (Input.GetKeyDown(KeyCode.Space)) {
@@ -107,7 +116,7 @@ public class PlayerController : MonoBehaviour {
                 this.Jump();
             }
             if (Input.GetTouch(0).phase == TouchPhase.Began && Input.touchCount == 2) {
-                this.Boost();
+                this.Boost(true);
             }
             /*
 			if (Input.GetTouch(i).phase == TouchPhase.Canceled)
@@ -192,7 +201,7 @@ public class PlayerController : MonoBehaviour {
     private void Boost(bool ignoreIfGrounded = false) {
         if ((this.IsGrounded() || ignoreIfGrounded) && this.gotBoostPowerup && this.hasBoosted == false) {
             this.hasBoosted = true;
-            Vector3 normalizedMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+            Vector3 normalizedMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 
             // Strip away all velocity not in the direction of desired movement.
             rb.angularVelocity = Vector3.zero;

@@ -28,14 +28,10 @@ public class PlayerController : MonoBehaviour {
 
     // Jump Cooldown
     private bool hasJumped = false;
-    private float jumpCooldownMaxtime = 0.2f;
-    private float jumpCooldownTimer = 0.0f;
     public float jumpHeight = 20.0f;
 
     // Boost Power up
     private bool hasBoosted = false;
-    private float boostCooldownMaxtime = 2.0f;
-    private float boostCooldownTimer = 0.0f;
     private float boostForce = 400.0f;
 
     // Stuff for ball texture
@@ -107,21 +103,6 @@ public class PlayerController : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Z)) {
             CameraController.zoomFactor = CameraController.zoomFactor == 1.0f ? 0.5f : 1.0f;
-        }
-        // Jump Cooldown
-        if (this.jumpCooldownTimer > 0) {
-            this.jumpCooldownTimer -= Time.deltaTime;
-        } else {
-            this.hasJumped = false;
-            this.RenderBallAfterPowerup();
-        }
-            
-        // Boost Cooldown
-        if (this.boostCooldownTimer > 0) {
-            this.boostCooldownTimer -= Time.deltaTime;
-        } else {
-            this.hasBoosted = false;
-            this.RenderBallAfterPowerup();
         }
 
         // Mobile
@@ -218,7 +199,7 @@ public class PlayerController : MonoBehaviour {
         if (this.IsGrounded() || ignoreCheckingIfOnGround && this.hasJumped == false) {
             this.hasJumped = true;
             this.rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
-            this.jumpCooldownTimer = this.jumpCooldownMaxtime;
+            CooldownTimerWrapper.StartACooldownTimerFor(0.2f, JumpCooldown);
             this.RenderBallAfterPowerup();
         }
     }
@@ -233,9 +214,19 @@ public class PlayerController : MonoBehaviour {
             rb.velocity = normalizedMovement * Mathf.Max(Vector3.Dot(normalizedMovement, rb.velocity), 0);
 
             this.rb.AddForce(normalizedMovement * boostForce);
-            this.boostCooldownTimer = this.boostCooldownMaxtime;
+            CooldownTimerWrapper.StartACooldownTimerFor(2.0f, BoostCooldown);
             this.RenderBallAfterPowerup();
         }
+    }
+
+    private void BoostCooldown() {
+        this.hasBoosted = false;
+        this.RenderBallAfterPowerup();
+    }
+
+    private void JumpCooldown() {
+        this.hasJumped = false;
+        this.RenderBallAfterPowerup();
     }
 
     private void RenderBallAfterPowerup() {

@@ -2,47 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CooldownTimerWrapper {
-
+public class CooldownTimer : MonoBehaviour {
     public delegate void TimerCallback();
 
-    public CooldownTimer timer;
+    private float timeLeft;
+    private TimerCallback callback;
 
-    public static void StartACooldownTimerFor(float t, TimerCallback c) {
-        var timeObject = GameObject.Find("Timer");
-        GameObject newObject = MonoBehaviour.Instantiate(timeObject);
-        CooldownTimer newTimer = newObject.GetComponent<CooldownTimer>();
-        newTimer.StartTimer(t, c, newObject);
+    public static void StartTimer(float duration, TimerCallback callback)
+    {
+        StartTimer(duration, callback, GameObject.Find("Timer"));
     }
 
-
-}
-
-public class CooldownTimer: MonoBehaviour {
-
-    private float time;
-    CooldownTimerWrapper.TimerCallback callback;
-    private GameObject currentObject;
-
-    public void StartTimer(float t, CooldownTimerWrapper.TimerCallback c, GameObject currentObject) {
-        this.time = t;
-        this.callback = c;
-        this.currentObject = currentObject;
+    public static void StartTimer(float duration, TimerCallback callback, GameObject currentObject) {
+        CooldownTimer timer = currentObject.AddComponent<CooldownTimer>();
+        timer.timeLeft = duration;
+        timer.callback = callback;
     }
-
-    // Update is called once per frame
+    
     void Update() {
-        // Skip the main Timer
-        if (this.name == "Timer") {
-            return;
-        }
-
-        if (this.time > 0) {
-            this.time -= Time.deltaTime;
-        } else {
+        this.timeLeft -= Time.deltaTime;
+        if (this.timeLeft <= 0)
+        {
             this.callback();
-            MonoBehaviour.Destroy(this.currentObject);
-            return;
+            Destroy(this);
         }
     }
 }

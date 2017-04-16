@@ -199,7 +199,7 @@ public class PlayerController : MonoBehaviour {
         if (this.IsGrounded() || ignoreCheckingIfOnGround && this.hasJumped == false) {
             this.hasJumped = true;
             this.rb.AddForce(new Vector3(0.0f, jumpHeight, 0.0f) * speed);
-            CooldownTimerWrapper.StartACooldownTimerFor(0.2f, JumpCooldown);
+            CooldownTimer.StartTimer(0.2f, JumpCooldown);
             this.RenderBallAfterPowerup();
         }
     }
@@ -214,7 +214,7 @@ public class PlayerController : MonoBehaviour {
             rb.velocity = normalizedMovement * Mathf.Max(Vector3.Dot(normalizedMovement, rb.velocity), 0);
 
             this.rb.AddForce(normalizedMovement * boostForce);
-            CooldownTimerWrapper.StartACooldownTimerFor(2.0f, BoostCooldown);
+            CooldownTimer.StartTimer(2.0f, BoostCooldown);
             this.RenderBallAfterPowerup();
         }
     }

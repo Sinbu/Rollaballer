@@ -16,8 +16,7 @@ public sealed class General : MonoBehaviour {
     public Text winText;
     public TextMesh hint1;
     public GameObject glassCeiling;
-    public GameObject platform1Entry;
-    public GameObject platform2Entry;
+    public Platform currentPlatform;
 
     private PlayerController playerController;
     private Rigidbody playerRB;
@@ -26,10 +25,8 @@ public sealed class General : MonoBehaviour {
     // States
     private bool? startedGame = null;
     private bool endedGame = false;
-    // private bool passedPlatform1 = false;
-    // private bool passedPlatform2 = false;
-    // private bool passedPlatform3 = false;
-    // private bool passedPlatform4 = false;
+
+    private Dictionary<int, Platform> platforms = new Dictionary<int, Platform>();
 
     // Timers
     private float startTime = 3.0f;
@@ -111,22 +108,27 @@ public sealed class General : MonoBehaviour {
         this.pickupCount += 1;
         countText.text = "Count: " + pickupCount.ToString();
         if (pickupCount >= 13) {
-            // this.passedPlatform1 = true;
+            currentPlatform.passed = true;
             this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            SetPlayerToPlatform(2);
+            SetPlayerToPlatform(currentPlatform.number + 1);
             endedGame = true;
             winText.text = "You win! Your Time: " + this.timer.ToString("0.000");
         }
     }
 
-    public void SetPlayerToPlatform(int platform = 1) {
-        // TODO: Implement this across the levels
-        if (platform == 1) {
-            this.playerController.transform.position = platform1Entry.transform.position;
+    public void SetPlayerToPlatform(int platformNumber = 1) {
+        if (this.platforms.ContainsKey(platformNumber))
+        {
+            this.currentPlatform = this.platforms[platformNumber];
+            this.playerController.transform.position = currentPlatform.startingPoint.transform.position;
+            playerRB.velocity = playerRB.angularVelocity = Vector3.zero;
         }
-        if (platform == 2) {
-            this.playerController.transform.position = platform2Entry.transform.position;
+    }
+
+    public void RegisterPlatform(Platform platform) {
+        if (this.platforms.ContainsKey(platform.number)) {
+            throw new System.Exception("A platform attempted to registered with number already in use " + platform.number);
         }
-        playerRB.velocity = playerRB.angularVelocity = Vector3.zero;
+        platforms[platform.number] = platform;
     }
 }

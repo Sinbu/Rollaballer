@@ -10,7 +10,7 @@ public class Spinner : MonoBehaviour {
     public float speed;
     private bool isRotating = false;
 
-    void Update() { 
+    void Update() {
         if (topValue == 0f || bottomValue == 0f || isRotating) {
             this.transform.Rotate(new Vector3(0, 0, 180) * Time.deltaTime * speed);
         } else if (this.transform.position.y >= topValue || this.transform.position.y <= bottomValue) {

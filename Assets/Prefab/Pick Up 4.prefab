@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 54485428294605886}
   - component: {fileID: 114454194865664276}
   m_Layer: 2
-  m_Name: Pick Up
+  m_Name: Pick Up 4
   m_TagString: Pick Up
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: c403ee4c83c104fdf9122d7b06dc8bd4, type: 2}
+  - {fileID: 2100000, guid: ab8d1b4a8e12746a4a4a38eab4604ed5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

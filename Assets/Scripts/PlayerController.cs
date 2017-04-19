@@ -39,6 +39,9 @@ public class PlayerController : MonoBehaviour {
     private Vector2 uvAnimationRate = new Vector2(0.5f, 0.5f);
     Vector2 uvOffset = Vector2.zero;
 
+    private KeyCode playerTeleportKeyMin = KeyCode.Alpha1;
+    private KeyCode playerTeleportKeyMaxInclusive = KeyCode.Alpha4;
+
     void Start() {
         rb = GetComponent<Rigidbody>();
         rendererComponent = GetComponent<Renderer>();
@@ -84,13 +87,10 @@ public class PlayerController : MonoBehaviour {
             this.transform.position = playerLastPosition;
         }
         // Cheat TODO: make cheats a part of a global setting or something
-        if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            // Go to platform 1 with the 1 button on the keyboard
-            this.generalObject.SetPlayerToPlatform(1);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            // Go to platform 2 with the 2 button on the keyboard
-            this.generalObject.SetPlayerToPlatform(2);
+        for (KeyCode key = playerTeleportKeyMin; key <= playerTeleportKeyMaxInclusive; ++key) {
+            if (Input.GetKeyDown(key)) {
+                this.generalObject.SetPlayerToPlatform(key - playerTeleportKeyMin + 1);
+            }
         }
 
         // Boost powerup used
@@ -171,7 +171,6 @@ public class PlayerController : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Pick Up")) {
-            generalObject.SetCountText();
             Destroy(other.gameObject);
         }
         if (other.gameObject.CompareTag("JumpPowerup")) {
@@ -205,10 +204,10 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Boost(bool ignoreCheckingIfOnGround = false) {
-        if ((this.IsGrounded() || ignoreCheckingIfOnGround) && this.gotBoostPowerup && this.hasBoosted == false) {
+        Vector3 normalizedMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        if ((this.IsGrounded() || ignoreCheckingIfOnGround) && this.gotBoostPowerup && this.hasBoosted == false && normalizedMovement != Vector3.zero) {
             this.hasBoosted = true;
-            Vector3 normalizedMovement = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-
+            
             // Strip away all velocity not in the direction of desired movement.
             rb.angularVelocity = Vector3.zero;
             rb.velocity = normalizedMovement * Mathf.Max(Vector3.Dot(normalizedMovement, rb.velocity), 0);

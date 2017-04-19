@@ -19,8 +19,6 @@ public sealed class General : MonoBehaviour {
     public Platform currentPlatform;
 
     private PlayerController playerController;
-    private Rigidbody playerRB;
-    private int pickupCount = -1;
 
     // States
     private bool? startedGame = null;
@@ -49,12 +47,10 @@ public sealed class General : MonoBehaviour {
 
     void Start() {
         playerController = GameObject.Find("Player").GetComponent<PlayerController>();
-        playerRB = GameObject.Find("Player").GetComponent<Rigidbody>();
         playerController.enabled = false;
         countText.enabled = false;
         timeText.enabled = false;
         countdownText.enabled = true;
-        SetCountText();
         winText.text = "";
         if (SystemInfo.deviceType == DeviceType.Handheld) {
             hint1.text = "Tap = Jump";
@@ -104,24 +100,12 @@ public sealed class General : MonoBehaviour {
         }
     }
 
-    public void SetCountText() {
-        this.pickupCount += 1;
-        countText.text = "Count: " + pickupCount.ToString();
-        if (pickupCount >= 13) {
-            currentPlatform.passed = true;
-            this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            SetPlayerToPlatform(currentPlatform.number + 1);
-            endedGame = true;
-            winText.text = "You win! Your Time: " + this.timer.ToString("0.000");
-        }
-    }
-
     public void SetPlayerToPlatform(int platformNumber = 1) {
         if (this.platforms.ContainsKey(platformNumber))
         {
             this.currentPlatform = this.platforms[platformNumber];
             this.playerController.transform.position = currentPlatform.startingPoint.transform.position;
-            playerRB.velocity = playerRB.angularVelocity = Vector3.zero;
+            this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         }
     }
 
@@ -130,5 +114,16 @@ public sealed class General : MonoBehaviour {
             throw new System.Exception("A platform attempted to registered with number already in use " + platform.number);
         }
         platforms[platform.number] = platform;
+    }
+
+    public void OnPickUpCollected()
+    {
+        countText.text = "Count: " + currentPlatform.PickupsCollected;
+        if (currentPlatform.IsPassed)
+        {
+            SetPlayerToPlatform(currentPlatform.number + 1);
+            endedGame = true;
+            winText.text = "You win! Your Time: " + this.timer.ToString("0.000");
+        }
     }
 }

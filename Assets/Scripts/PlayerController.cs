@@ -171,7 +171,7 @@ public class PlayerController : MonoBehaviour {
 
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Pick Up")) {
-            Destroy(other.gameObject);
+            other.gameObject.GetComponent<PickUp>().Collect();
         }
         if (other.gameObject.CompareTag("JumpPowerup")) {
             this.gotJumpPowerup = true;

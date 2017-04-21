@@ -9,7 +9,8 @@ public class PickUp : MonoBehaviour {
         platform.RegisterPickUp(this);
     }
 
-    void OnDestroy() {
+    public void Collect() {
         platform.CollectPickUp(this);
+        Destroy(this.gameObject);
     }
 }

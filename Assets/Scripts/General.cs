@@ -101,8 +101,7 @@ public sealed class General : MonoBehaviour {
     }
 
     public void SetPlayerToPlatform(int platformNumber = 1) {
-        if (this.platforms.ContainsKey(platformNumber))
-        {
+        if (this.platforms.ContainsKey(platformNumber)) {
             this.currentPlatform = this.platforms[platformNumber];
             this.playerController.transform.position = currentPlatform.startingPoint.transform.position;
             this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
@@ -116,11 +115,9 @@ public sealed class General : MonoBehaviour {
         platforms[platform.number] = platform;
     }
 
-    public void OnPickUpCollected()
-    {
+    public void OnPickUpCollected() {
         countText.text = "Count: " + currentPlatform.PickupsCollected;
-        if (currentPlatform.IsPassed)
-        {
+        if (currentPlatform.IsPassed) {
             SetPlayerToPlatform(currentPlatform.number + 1);
             endedGame = true;
             winText.text = "You win! Your Time: " + this.timer.ToString("0.000");

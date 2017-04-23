@@ -169,6 +169,17 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    void OnCollisionEnter(Collision other) {
+        if (other.gameObject.CompareTag("Platform")) {
+            // Limit the amount of upward mobility from hitting a platform (this only prevents extreme cases)
+            if (this.rb.velocity.y > 5.0f) {
+                var v = this.rb.velocity;
+                v.y = 5.0f;
+                this.rb.velocity = v;
+            }
+        }
+    }
+
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Pick Up")) {
             Destroy(other.gameObject);

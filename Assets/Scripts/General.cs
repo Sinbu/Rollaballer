@@ -87,18 +87,21 @@ public sealed class General : MonoBehaviour {
             timer += Time.deltaTime;
             timeText.text = "Time: " + timer.ToString("0.00");
         }
-        if (SystemInfo.deviceType == DeviceType.Handheld) {
-            if ((Input.GetTouch(0).phase == TouchPhase.Began) && startedGame == null) {
-                startedGame = false;
-                glassCeiling.SetActive(false);
-                glassCeiling.transform.position = new Vector3(0, 3.5f, 0);
-            }
-        } else if (Input.GetKeyDown(KeyCode.Space) && startedGame == null) {
-            startedGame = false;
-            glassCeiling.SetActive(false);
-            glassCeiling.transform.position = new Vector3(0, 3.5f, 0);
+
+        if (startedGame == null && (Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Space) || Input.GetAxis("Xbox A Button") > 0)) {
+            // if the player hits jump on their input, start the game
+            this.StartGame();
         }
     }
+
+    // Helper Methods
+    private void StartGame() {
+        // Sets state to false (pre game countdown), and restores gravity to player object (no more glass mirrors)
+        startedGame = false;
+        this.playerController.GetComponent<Rigidbody>().useGravity = true;
+    }
+
+    // Public Methods
 
     public void SetPlayerToPlatform(int platformNumber = 1) {
         if (this.platforms.ContainsKey(platformNumber)) {

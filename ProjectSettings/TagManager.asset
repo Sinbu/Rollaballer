@@ -12,6 +12,7 @@ TagManager:
   - Crusher
   - Platform
   - Moving Platform
+  - Wall
   layers:
   - Default
   - TransparentFX

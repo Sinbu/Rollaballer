@@ -168,14 +168,36 @@ public class PlayerController : MonoBehaviour {
             }
         }
     }
+    /*
+    void OnCollisionStay(Collision other) {
+        if (HasPlatformTag(other)) {
+            
+        }
+    }
+
+    void OnCollisionExit(Collision other) {
+        if (HasPlatformTag(other)) {
+            
+        }
+    }
+    */
 
     void OnCollisionEnter(Collision other) {
         if (HasPlatformTag(other)) {
-            // Limit the amount of upward mobility from hitting a platform (this only prevents extreme cases)
+            // Limit the amount of upward mobility from hitting a platform(this only prevents extreme cases)
             if (this.rb.velocity.y > 5.0f) {
                 // print("Y Vector reduced");
                 var v = this.rb.velocity;
                 v.y = 5.0f;
+                this.rb.velocity = v;
+            }
+        }
+        if (other.gameObject.CompareTag("Wall")) {
+            // Limit the amount of upward mobility from hitting a wall (this is a bit more extreme, I don't want the player to get lucky with walls)
+            if (this.rb.velocity.y > 1.0f) {
+                // print("Y Vector reduced");
+                var v = this.rb.velocity;
+                v.y = 1.0f;
                 this.rb.velocity = v;
             }
         }

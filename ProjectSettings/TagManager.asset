@@ -11,6 +11,7 @@ TagManager:
   - BoostPowerup
   - Crusher
   - Platform
+  - Moving Platform
   layers:
   - Default
   - TransparentFX

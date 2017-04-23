@@ -20,9 +20,7 @@ public class Platform : MonoBehaviour {
     public void CollectPickUp(PickUp pickUp) {
         outstandingPickUps.Remove(pickUp);
         pickUpsCollected++;
-        if (General.Instance != null) {
-            General.Instance.OnPickUpCollected();
-        }
+        General.Instance.OnPickUpCollected();
     }
 
     public bool IsPassed { get { return outstandingPickUps.Count == 0; } }

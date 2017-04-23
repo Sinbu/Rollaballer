@@ -105,10 +105,8 @@ public sealed class General : MonoBehaviour {
     public void SetPlayerToPlatform(int platformNumber = 1) {
         if (this.platforms.ContainsKey(platformNumber)) {
             this.currentPlatform = this.platforms[platformNumber];
-            if (this.playerController != null && this.currentPlatform != null) {
-                this.playerController.transform.position = currentPlatform.startingPoint.transform.position;
-                this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-            }
+            this.playerController.transform.position = currentPlatform.startingPoint.transform.position;
+            this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         }
     }
 

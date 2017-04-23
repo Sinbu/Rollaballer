@@ -15,7 +15,6 @@ public sealed class General : MonoBehaviour {
     public Text timeText;
     public Text winText;
     public TextMesh hint1;
-    public GameObject glassCeiling;
     public Platform currentPlatform;
 
     private PlayerController playerController;
@@ -96,7 +95,7 @@ public sealed class General : MonoBehaviour {
 
     // Helper Methods
     private void StartGame() {
-        // Sets state to false (pre game countdown), and restores gravity to player object (no more glass mirrors)
+        // Sets state to false (pre game countdown), and restores gravity to player object (no more glass ceiling)
         startedGame = false;
         this.playerController.GetComponent<Rigidbody>().useGravity = true;
     }

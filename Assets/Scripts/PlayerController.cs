@@ -169,6 +169,18 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    void OnCollisionEnter(Collision other) {
+        if (HasPlatformTag(other)) {
+            // Limit the amount of upward mobility from hitting a platform (this only prevents extreme cases)
+            if (this.rb.velocity.y > 5.0f) {
+                // print("Y Vector reduced");
+                var v = this.rb.velocity;
+                v.y = 5.0f;
+                this.rb.velocity = v;
+            }
+        }
+    }
+
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Pick Up")) {
             other.gameObject.GetComponent<PickUp>().Collect();
@@ -193,7 +205,11 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    // Helper functions
+    // Helper Methods
+    private bool HasPlatformTag(Collision other) {
+        return (other.gameObject.CompareTag("Platform") || other.gameObject.CompareTag("Crusher") || other.gameObject.CompareTag("Moving Platform"));
+    }
+
     private void Jump(bool ignoreCheckingIfOnGround = false) {
         if (this.IsGrounded() || ignoreCheckingIfOnGround && this.hasJumped == false) {
             this.hasJumped = true;

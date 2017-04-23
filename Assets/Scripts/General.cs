@@ -15,7 +15,6 @@ public sealed class General : MonoBehaviour {
     public Text timeText;
     public Text winText;
     public TextMesh hint1;
-    public GameObject glassCeiling;
     public Platform currentPlatform;
 
     private PlayerController playerController;
@@ -87,25 +86,29 @@ public sealed class General : MonoBehaviour {
             timer += Time.deltaTime;
             timeText.text = "Time: " + timer.ToString("0.00");
         }
-        if (SystemInfo.deviceType == DeviceType.Handheld) {
-            if ((Input.GetTouch(0).phase == TouchPhase.Began) && startedGame == null) {
-                startedGame = false;
-                glassCeiling.SetActive(false);
-                glassCeiling.transform.position = new Vector3(0, 3.5f, 0);
-            }
-        } else if (Input.GetKeyDown(KeyCode.Space) && startedGame == null) {
-            startedGame = false;
-            glassCeiling.SetActive(false);
-            glassCeiling.transform.position = new Vector3(0, 3.5f, 0);
+
+        if (startedGame == null && (Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Space) || Input.GetAxis("Xbox A Button") > 0)) {
+            // if the player hits jump on their input, start the game
+            this.StartGame();
         }
     }
 
+    // Helper Methods
+    private void StartGame() {
+        // Sets state to false (pre game countdown), and restores gravity to player object (no more glass ceiling)
+        startedGame = false;
+        this.playerController.GetComponent<Rigidbody>().useGravity = true;
+    }
+
+    // Public Methods
+
     public void SetPlayerToPlatform(int platformNumber = 1) {
-        if (this.platforms.ContainsKey(platformNumber))
-        {
+        if (this.platforms.ContainsKey(platformNumber)) {
             this.currentPlatform = this.platforms[platformNumber];
-            this.playerController.transform.position = currentPlatform.startingPoint.transform.position;
-            this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            if (this.playerController != null && this.currentPlatform != null) {
+                this.playerController.transform.position = currentPlatform.startingPoint.transform.position;
+                this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            }
         }
     }
 
@@ -116,11 +119,9 @@ public sealed class General : MonoBehaviour {
         platforms[platform.number] = platform;
     }
 
-    public void OnPickUpCollected()
-    {
+    public void OnPickUpCollected() {
         countText.text = "Count: " + currentPlatform.PickupsCollected;
-        if (currentPlatform.IsPassed)
-        {
+        if (currentPlatform.IsPassed) {
             SetPlayerToPlatform(currentPlatform.number + 1);
             endedGame = true;
             winText.text = "You win! Your Time: " + this.timer.ToString("0.000");

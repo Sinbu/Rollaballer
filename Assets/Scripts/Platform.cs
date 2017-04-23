@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Platform : MonoBehaviour
-{
+public class Platform : MonoBehaviour {
     public int number;
     public GameObject startingPoint;
 
@@ -21,9 +20,12 @@ public class Platform : MonoBehaviour
     public void CollectPickUp(PickUp pickUp) {
         outstandingPickUps.Remove(pickUp);
         pickUpsCollected++;
-        General.Instance.OnPickUpCollected();
+        if (General.Instance != null) {
+            General.Instance.OnPickUpCollected();
+        }
     }
 
     public bool IsPassed { get { return outstandingPickUps.Count == 0; } }
+
     public int PickupsCollected { get { return pickUpsCollected; } }
 }

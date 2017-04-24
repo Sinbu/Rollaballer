@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
     public float speed;
+    private const int movingPlatformMask = 1 << 8; // This is the layer mask for moving platforms
 
     public Text countText;
     public Material standardBallMaterial;
@@ -72,17 +73,13 @@ public class PlayerController : MonoBehaviour {
         // TODO: Add "speed limit" (top speed) here
 
         // Record players last known location, using the center of the ball
-        int movingPlatformMask = 1 << 8; // This is the layer mask for moving platforms
-
         // NOTE: All moving platforms must use this layer (use the moving platform prefab)
 
         if (Physics.Raycast(this.transform.position, Vector3.down, 0.6f, ~movingPlatformMask)) {
             playerLastPosition = this.transform.position;
 
             // This will remove the reference to the last platform the player was on for reset purposes
-            if (this.playerLastPlatform != null) {
-                this.playerLastPlatform = null;
-            }
+            this.playerLastPlatform = null;
 
             // For Debugging collisions (sp?)
             /* foreach(var ray in Physics.RaycastAll(this.transform.position, Vector3.down, 0.6f)) {

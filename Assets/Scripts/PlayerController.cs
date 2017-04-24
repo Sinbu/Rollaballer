@@ -14,12 +14,14 @@ public class PlayerController : MonoBehaviour {
     public Material boostMaterialUsed;
     public Material cameraMaterial;
 
+    // Ball Rigidbody and calclulations
     private General generalObject;
     private Rigidbody rb;
     private Renderer rendererComponent;
     private float distToGround;
     private Vector3 playerLastPosition;
-    // private float softMaxVelocity = 2.0f;
+    private GameObject playerLastPlatform;
+    // Assuming player will only be on one platform at a time
 
     private bool gotJumpPowerup = false;
     private bool gotCameraPowerup = false;
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour {
     private Vector2 uvAnimationRate = new Vector2(0.5f, 0.5f);
     Vector2 uvOffset = Vector2.zero;
 
+    // Keycode for teleporting ball to start of platform (cheat code)
     private KeyCode playerTeleportKeyMin = KeyCode.Alpha1;
     private KeyCode playerTeleportKeyMaxInclusive = KeyCode.Alpha4;
 
@@ -69,8 +72,17 @@ public class PlayerController : MonoBehaviour {
         // TODO: Add "speed limit" (top speed) here
 
         // Record players last known location, using the center of the ball
-        if (Physics.Raycast(this.transform.position, Vector3.down, 0.6f)) {
+        int movingPlatformMask = 1 << 8; // This is the layer mask for moving platforms
+
+        // NOTE: All moving platforms must use this layer (use the moving platform prefab)
+
+        if (Physics.Raycast(this.transform.position, Vector3.down, 0.6f, ~movingPlatformMask)) {
             playerLastPosition = this.transform.position;
+
+            // This will remove the reference to the last platform the player was on for reset purposes
+            if (this.playerLastPlatform != null) {
+                this.playerLastPlatform = null;
+            }
 
             // For Debugging collisions (sp?)
             /* foreach(var ray in Physics.RaycastAll(this.transform.position, Vector3.down, 0.6f)) {
@@ -80,11 +92,9 @@ public class PlayerController : MonoBehaviour {
     }
 
     void Update() {
-        // Return player if they are out of bounds TODO: Do this better
+        // Return player if they are out of bounds
         if (this.transform.position.y <= playerLastPosition.y - 10.0f) {
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero; 
-            this.transform.position = playerLastPosition;
+            ResetPlayerPosition();
         }
         // Cheat TODO: make cheats a part of a global setting or something
         for (KeyCode key = playerTeleportKeyMin; key <= playerTeleportKeyMaxInclusive; ++key) {
@@ -168,19 +178,6 @@ public class PlayerController : MonoBehaviour {
             }
         }
     }
-    /*
-    void OnCollisionStay(Collision other) {
-        if (HasPlatformTag(other)) {
-            
-        }
-    }
-
-    void OnCollisionExit(Collision other) {
-        if (HasPlatformTag(other)) {
-            
-        }
-    }
-    */
 
     void OnCollisionEnter(Collision other) {
         if (HasPlatformTag(other)) {
@@ -191,7 +188,19 @@ public class PlayerController : MonoBehaviour {
                 v.y = 5.0f;
                 this.rb.velocity = v;
             }
+                
         }
+        if (other.gameObject.CompareTag("Moving Platform")) {
+            // Remembering player's last platform they were on, used for resetting the player when jumping off a platform
+            // Note: We only want this if the player is on TOP of the moving platform (for now)
+
+            // This is seeing if player is above the platform (fully on). player position - player height (approx, since it's a sphere) >= y position + height
+            // TODO: Set .45 as a tolerence point for the sphere's half height, or what we consider its feet (its .5 at scale 1, but that's the tip)
+            if (this.transform.position.y - 0.45f >= (other.gameObject.transform.position.y + (other.gameObject.transform.lossyScale.y / 2))) {
+                this.playerLastPlatform = other.gameObject;
+            }
+        }
+
         if (other.gameObject.CompareTag("Wall")) {
             // Limit the amount of upward mobility from hitting a wall (this is a bit more extreme, I don't want the player to get lucky with walls)
             if (this.rb.velocity.y > 1.0f) {
@@ -228,6 +237,17 @@ public class PlayerController : MonoBehaviour {
     }
 
     // Helper Methods
+    private void ResetPlayerPosition() {
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        if (this.playerLastPlatform != null) {
+            // If player jumped off a platform but didn't hit any other ground, it should reset to the platform
+            var platformPosition = this.playerLastPlatform.transform.position;
+            playerLastPosition = platformPosition + new Vector3(0, (this.playerLastPlatform.transform.lossyScale.y / 2), 0);
+        }
+        this.transform.position = playerLastPosition;
+    }
+
     private bool HasPlatformTag(Collision other) {
         return (other.gameObject.CompareTag("Platform") || other.gameObject.CompareTag("Crusher") || other.gameObject.CompareTag("Moving Platform"));
     }

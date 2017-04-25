@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Platform : MonoBehaviour {
+public class Area : MonoBehaviour {
     public int number;
     public GameObject startingPoint;
 

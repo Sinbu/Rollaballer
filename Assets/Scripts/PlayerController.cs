@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour {
         // Cheat TODO: make cheats a part of a global setting or something
         for (KeyCode key = playerTeleportKeyMin; key <= playerTeleportKeyMaxInclusive; ++key) {
             if (Input.GetKeyDown(key)) {
-                this.generalObject.SetPlayerToPlatform(key - playerTeleportKeyMin + 1);
+                this.generalObject.SetPlayerToArea(key - playerTeleportKeyMin + 1);
             }
         }
 

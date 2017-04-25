@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PickUp : MonoBehaviour {
-    public Platform platform;
+    public Area area;
 
     void Start() {
-        platform.RegisterPickUp(this);
+        area.RegisterPickUp(this);
     }
 
     public void Collect() {
-        platform.CollectPickUp(this);
+        area.CollectPickUp(this);
         Destroy(this.gameObject);
     }
 }

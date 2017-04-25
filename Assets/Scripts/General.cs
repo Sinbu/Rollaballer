@@ -15,15 +15,14 @@ public sealed class General : MonoBehaviour {
     public Text timeText;
     public Text winText;
     public TextMesh hint1;
-    public Platform currentPlatform;
+    public Area currentArea;
 
     private PlayerController playerController;
 
     // States
-    private bool? startedGame = null;
     private bool endedGame = false;
 
-    private Dictionary<int, Platform> platforms = new Dictionary<int, Platform>();
+    private Dictionary<int, Area> areas = new Dictionary<int, Area>();
 
     // Timers
     private float startTime = 3.0f;
@@ -64,63 +63,48 @@ public sealed class General : MonoBehaviour {
         // Can restart game at any time
         if (Input.GetKeyDown(KeyCode.R)) {
             SceneManager.LoadScene("Minigame");
-        }
-        if (startedGame == false) {
-            startTime -= Time.deltaTime;
-            if (startTime >= 2) {
-                countdownText.text = "3!!!";
-            } else if (startTime >= 1) {
-                countdownText.text = "2!!";
-            } else if (startTime >= 0) {
-                countdownText.text = "1!";
+        } else if (!playerController.GetComponent<Rigidbody>().useGravity) {
+            if (Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Space) || Input.GetAxis("Xbox A Button") > 0) {
+                // If the player hits jump on their input, start the game.
+                this.playerController.GetComponent<Rigidbody>().useGravity = true;
             }
-            if (startTime <= 0) { 
-                startedGame = true; // This is terrible
+        } else if (!playerController.enabled) {
+            startTime -= Time.deltaTime;
+            if (startTime > 0) {
+                int secondsLeft = (int)Mathf.Ceil(startTime);
+                countdownText.text = secondsLeft.ToString() + new string('!', secondsLeft);
+            } else {
                 playerController.enabled = true;
                 countText.enabled = true;
                 timeText.enabled = true;
                 countdownText.enabled = false;
             }
-        }
-        if (startedGame == true && endedGame == false) {
+        } else if (!endedGame) {
             timer += Time.deltaTime;
             timeText.text = "Time: " + timer.ToString("0.00");
         }
-
-        if (startedGame == null && (Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Space) || Input.GetAxis("Xbox A Button") > 0)) {
-            // if the player hits jump on their input, start the game
-            this.StartGame();
-        }
-    }
-
-    // Helper Methods
-    private void StartGame() {
-        // Sets state to false (pre game countdown), and restores gravity to player object (no more glass ceiling)
-        startedGame = false;
-        this.playerController.GetComponent<Rigidbody>().useGravity = true;
     }
 
     // Public Methods
-
-    public void SetPlayerToPlatform(int platformNumber = 1) {
-        if (this.platforms.ContainsKey(platformNumber)) {
-            this.currentPlatform = this.platforms[platformNumber];
-            this.playerController.transform.position = currentPlatform.startingPoint.transform.position;
+    public void SetPlayerToArea(int areaNumber = 1) {
+        if (this.areas.ContainsKey(areaNumber)) {
+            this.currentArea = this.areas[areaNumber];
+            this.playerController.transform.position = currentArea.startingPoint.transform.position;
             this.playerController.GetComponent<Rigidbody>().velocity = this.playerController.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         }
     }
 
-    public void RegisterPlatform(Platform platform) {
-        if (this.platforms.ContainsKey(platform.number)) {
-            throw new System.Exception("A platform attempted to registered with number already in use " + platform.number);
+    public void RegisterPlatform(Area area) {
+        if (this.areas.ContainsKey(area.number)) {
+            throw new System.Exception("A area attempted to registered with number already in use " + area.number);
         }
-        platforms[platform.number] = platform;
+        areas[area.number] = area;
     }
 
     public void OnPickUpCollected() {
-        countText.text = "Count: " + currentPlatform.PickupsCollected;
-        if (currentPlatform.IsPassed) {
-            SetPlayerToPlatform(currentPlatform.number + 1);
+        countText.text = "Count: " + currentArea.PickupsCollected;
+        if (currentArea.IsPassed) {
+            SetPlayerToArea(currentArea.number + 1);
             endedGame = true;
             winText.text = "You win! Your Time: " + this.timer.ToString("0.000");
         }

@@ -4156,7 +4156,7 @@ MonoBehaviour:
   timeText: {fileID: 252250124}
   winText: {fileID: 213143616}
   hint1: {fileID: 1621336967}
-  currentArea: {fileID: 0}
+  currentArea: {fileID: 1479903599}
 --- !u!1001 &1825421100
 Prefab:
   m_ObjectHideFlags: 0

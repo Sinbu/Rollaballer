@@ -46,6 +46,15 @@ public class PlayerController : MonoBehaviour {
     private KeyCode playerTeleportKeyMin = KeyCode.Alpha1;
     private KeyCode playerTeleportKeyMaxInclusive = KeyCode.Alpha4;
 
+    private float resetThreshold = -10.0f;
+    private Dictionary<string, float> tagToVerticalVelocityLimit = new Dictionary<string, float>() {
+        { "Platform", 5.0f },
+        { "Crusher", 5.0f },
+        { "Moving Platform", 5.0f },
+        // More extreme, don't want the player to get lucky with walls.
+        { "Wall", 1.0f }
+    };
+
     void Start() {
         rb = GetComponent<Rigidbody>();
         rendererComponent = GetComponent<Renderer>();
@@ -59,16 +68,12 @@ public class PlayerController : MonoBehaviour {
 
     void FixedUpdate() {
         Vector3 movement;
-
         if (SystemInfo.deviceType == DeviceType.Handheld) {
             movement = new Vector3(Input.acceleration.x, 0.0f, Input.acceleration.y);
         } else {
-            float moveHorizontal = Input.GetAxis("Horizontal");
-            float moveVertical = Input.GetAxis("Vertical");
-            movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+            movement = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
         }
-            
-        rb.AddForce(movement * speed);
+        rb.AddForce(movement.normalized * speed);
 
         // TODO: Add "speed limit" (top speed) here
 
@@ -90,7 +95,7 @@ public class PlayerController : MonoBehaviour {
 
     void Update() {
         // Return player if they are out of bounds
-        if (this.transform.position.y <= playerLastPosition.y - 10.0f) {
+        if (this.transform.position.y < resetThreshold) {
             ResetPlayerPosition();
         }
         // Cheat TODO: make cheats a part of a global setting or something
@@ -104,7 +109,6 @@ public class PlayerController : MonoBehaviour {
         if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false) {
             this.Boost(true);
         }
-
         if (Input.GetKeyDown(KeyCode.Space)) {
             this.Jump();
         }
@@ -177,16 +181,16 @@ public class PlayerController : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision other) {
-        if (HasPlatformTag(other)) {
-            // Limit the amount of upward mobility from hitting a platform(this only prevents extreme cases)
-            if (this.rb.velocity.y > 5.0f) {
-                // print("Y Vector reduced");
+        // Limit the amount of upward mobility from hitting various objects.
+        if (tagToVerticalVelocityLimit.ContainsKey(other.gameObject.tag)) {
+            float verticalLimit = tagToVerticalVelocityLimit[other.gameObject.tag];
+            if (this.rb.velocity.y > verticalLimit) {
                 var v = this.rb.velocity;
-                v.y = 5.0f;
+                v.y = verticalLimit;
                 this.rb.velocity = v;
             }
-                
         }
+
         if (other.gameObject.CompareTag("Moving Platform")) {
             // Remembering player's last platform they were on, used for resetting the player when jumping off a platform
             // Note: We only want this if the player is on TOP of the moving platform (for now)
@@ -195,16 +199,6 @@ public class PlayerController : MonoBehaviour {
             // TODO: Set .45 as a tolerence point for the sphere's half height, or what we consider its feet (its .5 at scale 1, but that's the tip)
             if (this.transform.position.y - 0.45f >= (other.gameObject.transform.position.y + (other.gameObject.transform.lossyScale.y / 2))) {
                 this.playerLastPlatform = other.gameObject;
-            }
-        }
-
-        if (other.gameObject.CompareTag("Wall")) {
-            // Limit the amount of upward mobility from hitting a wall (this is a bit more extreme, I don't want the player to get lucky with walls)
-            if (this.rb.velocity.y > 1.0f) {
-                // print("Y Vector reduced");
-                var v = this.rb.velocity;
-                v.y = 1.0f;
-                this.rb.velocity = v;
             }
         }
     }
@@ -228,7 +222,6 @@ public class PlayerController : MonoBehaviour {
         if (other.gameObject.CompareTag("BoostPowerup")) {
             this.gotBoostPowerup = true;
             this.RenderBallAfterPowerup();
-            // TODO: Implement boost
             Destroy(other.gameObject);
         }
     }
@@ -243,10 +236,6 @@ public class PlayerController : MonoBehaviour {
             playerLastPosition = platformPosition + new Vector3(0, (this.playerLastPlatform.transform.lossyScale.y / 2), 0);
         }
         this.transform.position = playerLastPosition;
-    }
-
-    private bool HasPlatformTag(Collision other) {
-        return (other.gameObject.CompareTag("Platform") || other.gameObject.CompareTag("Crusher") || other.gameObject.CompareTag("Moving Platform"));
     }
 
     private void Jump(bool ignoreCheckingIfOnGround = false) {
@@ -289,11 +278,7 @@ public class PlayerController : MonoBehaviour {
         powerupCount = 0;
 
         if (this.gotJumpPowerup) {
-            if (this.hasJumped) {
-                materials.Add(jumpMaterialUsed);
-            } else {
-                materials.Add(jumpMaterial);
-            }
+            materials.Add(hasJumped ? jumpMaterialUsed : jumpMaterial);
             powerupCount++;
         }
         if (this.gotCameraPowerup) {
@@ -301,16 +286,10 @@ public class PlayerController : MonoBehaviour {
             powerupCount++;
         }
         if (this.gotBoostPowerup) {
-            if (this.hasBoosted) {
-                // Cooldown state
-                materials.Add(boostMaterialUsed);
-            } else {
-                materials.Add(boostMaterial);
-            }
+            materials.Add(hasBoosted ? boostMaterialUsed : boostMaterial);
             powerupCount++;
         }
         materials.Add(standardBallMaterial);
-
         this.rendererComponent.materials = materials.ToArray();
     }
 }

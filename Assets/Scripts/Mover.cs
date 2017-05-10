@@ -59,7 +59,6 @@ public class Mover : MonoBehaviour {
                 calculatedSpeed = Vector3.Distance(pos, towards) / (distanceBetweenPoints / 2) * speed;
                 break;
         }
-        print(calculatedSpeed);
         rb.MovePosition(this.rb.position + direction * calculatedSpeed * Time.deltaTime);
     }
 }

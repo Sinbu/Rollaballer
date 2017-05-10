@@ -105,6 +105,33 @@ public class PlayerController : MonoBehaviour {
             }
         }
 
+        // Debug tools
+        if (Debug.isDebugBuild) {
+
+            // Toggle Boost powerup
+            if (Input.GetKeyDown(KeyCode.B)) {
+                this.gotBoostPowerup = !this.gotBoostPowerup;
+                this.RenderBallAfterPowerup();
+                Debug.Log("Toggled boost powerup: " + (this.gotBoostPowerup ? "On" : "Off"));
+            }
+
+            // Toggle Camera powerup
+            if (Input.GetKeyDown(KeyCode.C)) {
+                this.gotCameraPowerup = !this.gotCameraPowerup;
+                this.RenderBallAfterPowerup();
+                Debug.Log("Toggled camera powerup: " + (this.gotCameraPowerup ? "On" : "Off"));
+            }
+
+            // Toggle Jump powerup
+            if (Input.GetKeyDown(KeyCode.J)) {
+                this.gotJumpPowerup = !this.gotJumpPowerup;
+                this.RenderBallAfterPowerup();
+                this.jumpHeight = this.gotJumpPowerup ? 30.0f : 20.0f;
+                Debug.Log("Toggled jump powerup: " + (this.gotJumpPowerup ? "On" : "Off"));
+            }
+
+        }
+
         // Boost powerup used
         if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && this.gotBoostPowerup && this.hasBoosted == false) {
             this.Boost(true);

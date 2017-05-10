@@ -14,10 +14,12 @@ public sealed class General : MonoBehaviour {
     public Text countText;
     public Text timeText;
     public Text winText;
+    public Text resetText;
     public TextMesh hint1;
     public Area currentArea;
 
     private PlayerController playerController;
+    private int resetCounter = 0;
 
     // States
     private bool endedGame = false;
@@ -48,6 +50,7 @@ public sealed class General : MonoBehaviour {
         playerController.enabled = false;
         countText.enabled = false;
         timeText.enabled = false;
+        resetText.gameObject.SetActive(false);
         countdownText.enabled = true;
         winText.text = "";
         if (SystemInfo.deviceType == DeviceType.Handheld) {
@@ -62,7 +65,15 @@ public sealed class General : MonoBehaviour {
     void Update() {
         // Can restart game at any time
         if (Input.GetKeyDown(KeyCode.R)) {
-            SceneManager.LoadScene("Minigame");
+            if (resetCounter == 1) {
+                resetCounter = 0;
+                SceneManager.LoadScene("Minigame");
+            }
+            if (resetCounter == 0) {
+                resetCounter++;
+                this.resetText.gameObject.SetActive(true);
+                CooldownTimer.StartTimer(2.0f, resetCooldownTimer);
+            }
         } else if (!playerController.GetComponent<Rigidbody>().useGravity) {
             if (Input.touchCount > 1 || Input.GetKeyDown(KeyCode.Space) || Input.GetAxis("Xbox A Button") > 0) {
                 // If the player hits jump on their input, start the game.
@@ -83,6 +94,11 @@ public sealed class General : MonoBehaviour {
             timer += Time.deltaTime;
             timeText.text = "Time: " + timer.ToString("0.00");
         }
+    }
+
+    private void resetCooldownTimer() {
+        this.resetText.gameObject.SetActive(false);
+        this.resetCounter = 0;
     }
 
     // Public Methods

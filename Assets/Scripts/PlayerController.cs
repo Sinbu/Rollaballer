@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour {
     public float speed;
-    private const int movingPlatformMask = 1 << 8; // This is the layer mask for moving platforms
+    private const int movingPlatformMask = 1 << 8;
+    // This is the layer mask for moving platforms
 
     public Text countText;
     public Material standardBallMaterial;
@@ -47,7 +48,8 @@ public class PlayerController : MonoBehaviour {
     private KeyCode playerTeleportKeyMaxInclusive = KeyCode.Alpha4;
 
     private float resetThreshold = -10.0f;
-    private Dictionary<string, float> tagToVerticalVelocityLimit = new Dictionary<string, float>() {
+    private Dictionary<string, float> tagToVerticalVelocityLimit = new Dictionary<string, float>()
+    {
         { "Platform", 5.0f },
         { "Crusher", 5.0f },
         { "Moving Platform", 5.0f },
@@ -98,10 +100,12 @@ public class PlayerController : MonoBehaviour {
         if (this.transform.position.y < resetThreshold) {
             ResetPlayerPosition();
         }
-        // Cheat TODO: make cheats a part of a global setting or something
-        for (KeyCode key = playerTeleportKeyMin; key <= playerTeleportKeyMaxInclusive; ++key) {
-            if (Input.GetKeyDown(key)) {
-                this.generalObject.SetPlayerToArea(key - playerTeleportKeyMin + 1);
+
+        if (Debug.isDebugBuild) {
+            for (KeyCode key = playerTeleportKeyMin; key <= playerTeleportKeyMaxInclusive; ++key) {
+                if (Input.GetKeyDown(key)) {
+                    this.generalObject.SetPlayerToArea(key - playerTeleportKeyMin + 1);
+                }
             }
         }
 
